@@ -43,22 +43,25 @@ class AssistantWindow:
         self,
         *,
         store: ObservationStore,
-        pipeline: CapturePipeline,
+        pipeline: CapturePipeline | None,
         inference: InferenceCoordinator,
         catalog: tuple[CatalogItem, ...],
+        monitor=None,
+        title: str = "Auction Moment · 半自动 OCR 预测助手",
     ) -> None:
         self.store = store
         self.pipeline = pipeline
         self.inference = inference
         self.catalog = catalog
-        self.monitor = EphemeralStateMonitor(pipeline, store)
+        # Packet capture brings its own monitor; otherwise watch the screen.
+        self.monitor = monitor if monitor is not None else EphemeralStateMonitor(pipeline, store)
         self._prediction_future: Future | None = None
         self._log_entry_count = 0
         self._initial_sash_attempts = 0
         self._initial_sash_applied = False
 
         self.root = tk.Tk()
-        self.root.title("Auction Moment · 半自动 OCR 预测助手")
+        self.root.title(title)
         self.root.geometry("1440x940")
         self.root.minsize(1180, 780)
         self.root.protocol("WM_DELETE_WINDOW", self.close)

@@ -144,10 +144,16 @@ def verify_assistant_privacy_boundary(errors: list[str]) -> None:
         / "src"
         / "auction_moment_assistant"
     )
+    # Passive capture may decode only the frames visible before bidding
+    # (packet_protocol.VISIBLE_FRAMES); the other auction frames stay out.
     forbidden_tokens = {
-        "auction_protocol": "protocol implementation",
+        "auction_protocol": "private protocol implementation",
         "packet_realtime_bidder": "packet bidder",
-        "tcpdump": "packet capture",
+        "005b6d": "bid submission frame",
+        "005b6e": "bid result frame",
+        "005b6f": "round ranking frame",
+        "005b70": "settlement frame",
+        "005b87": "pre-match context frame",
         "write_text(": "runtime text persistence",
         "write_bytes(": "runtime binary persistence",
         "cv2.imwrite(": "runtime image persistence",

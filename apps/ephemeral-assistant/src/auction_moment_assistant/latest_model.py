@@ -813,17 +813,26 @@ class LatestV6V2Predictor:
         engine = getattr(self, "exact_engine", None)
         if engine is None:
             return False
-        from .exact_evidence import evidence_from_snapshot, evidence_seed
+        from .exact_evidence import evidence_seed
 
-        converted = evidence_from_snapshot(
-            snapshot,
-            self.exact_catalog,
-            minimum_confidence=self.adapter.minimum_ocr_confidence,
-            prewarm=True,
-        )
+        converted = self._exact_evidence(snapshot, prewarm=True)
         if not converted.usable:
             return False
         return engine.prewarm(converted.evidence, evidence_seed(snapshot))
+
+    def _exact_evidence(self, snapshot: ObservationSnapshot, *, prewarm: bool = False):
+        """Packet-capture decision records when the snapshot carries one, else the screen rules."""
+        from .exact_evidence import evidence_from_decision, evidence_from_snapshot
+
+        decision = getattr(snapshot, "packet_decision", None)
+        if decision is not None:
+            return evidence_from_decision(decision, self.exact_catalog)
+        return evidence_from_snapshot(
+            snapshot,
+            self.exact_catalog,
+            minimum_confidence=self.adapter.minimum_ocr_confidence,
+            prewarm=prewarm,
+        )
 
     def refine(self, revision: int) -> bool:
         """Rerun the last decision cut by the time budget, without waiting.
@@ -894,15 +903,13 @@ class LatestV6V2Predictor:
         """Experimental exact-constraint posterior; v6 when it cannot run."""
         import time
 
-        from .exact_evidence import evidence_from_snapshot, evidence_seed
+        from .exact_evidence import evidence_seed
 
-        converted = evidence_from_snapshot(
-            snapshot,
-            self.exact_catalog,
-            minimum_confidence=self.adapter.minimum_ocr_confidence,
-        )
+        converted = self._exact_evidence(snapshot)
+        packet = getattr(snapshot, "packet_decision", None) is not None
         diagnostics = {
             "experimental_exact_sampling": True,
+            "exact_input": "packet_capture" if packet else "ocr_screen",
             "exact_lanes": self.exact_engine.lanes,
             "exact_budget_seconds": self.exact_budget_seconds,
             "exact_ignored_clues": list(converted.ignored),
@@ -945,10 +952,14 @@ class LatestV6V2Predictor:
                     *adapted.warnings,
                     failure,
                     "exact_unavailable_using_v6_fallback",
-                    "ocr_adapter_not_packet_equivalent",
+                    "packet_capture_inputs" if packet else "ocr_adapter_not_packet_equivalent",
                     "interval_uncalibrated",
                 ))),
-                contract="ocr_adapted_v6_fallback_exact_unavailable_uncalibrated",
+                contract=(
+                    "packet_capture_v6_fallback_exact_unavailable_uncalibrated"
+                    if packet
+                    else "ocr_adapted_v6_fallback_exact_unavailable_uncalibrated"
+                ),
                 v6_prediction=v6_p50,
                 generation_weight=0.0,
                 model_version=V6_CANDIDATE_ID,
@@ -981,6 +992,7 @@ class LatestV6V2Predictor:
     ) -> PredictionResult:
         """The exact-mode estimate for a sampler result that has support."""
         diagnostics = dict(diagnostics)
+        packet = getattr(snapshot, "packet_decision", None) is not None
         summary = result.summary()
         p10 = max(1, round(summary["p10"]))
         p50 = max(p10, round(summary["p50"]))
@@ -1008,10 +1020,14 @@ class LatestV6V2Predictor:
             issues=tuple(dict.fromkeys((
                 *adapted.warnings,
                 *(() if reliable else ("exact_posterior_low_ess",)),
-                "ocr_adapter_not_packet_equivalent",
+                "packet_capture_inputs" if packet else "ocr_adapter_not_packet_equivalent",
                 "interval_uncalibrated",
             ))),
-            contract="ocr_adapted_exact_v2_posterior_uncalibrated",
+            contract=(
+                "packet_capture_exact_v2_posterior_uncalibrated"
+                if packet
+                else "ocr_adapted_exact_v2_posterior_uncalibrated"
+            ),
             v6_prediction=v6_p50,
             v2_prediction=point,
             generation_weight=1.0,

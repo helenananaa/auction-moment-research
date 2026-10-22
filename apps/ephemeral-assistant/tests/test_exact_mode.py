@@ -16,7 +16,7 @@ from collections import Counter
 
 import numpy as np
 
-from auction_moment_assistant.cli import build_parser
+from auction_moment_assistant.cli import build_parser, exact_enabled
 from auction_moment_assistant.exact_evidence import RowsTable
 from auction_moment_assistant.latest_model import LatestV6V2Predictor
 from auction_moment_assistant.models import CatalogItem
@@ -83,9 +83,10 @@ CATALOG = (
 
 
 class ExactModeOptInTests(unittest.TestCase):
-    def test_cli_flags_default_to_the_released_path(self):
+    def test_cli_runs_the_exact_model_by_default(self):
         args = build_parser().parse_args([])
-        self.assertFalse(args.experimental_exact_sampling)
+        self.assertTrue(exact_enabled(args))
+        self.assertFalse(args.experimental_exact_sampling)  # kept only for old commands
         self.assertEqual(args.exact_budget_seconds, 8.0)
         self.assertEqual(args.exact_lanes, 4)
         self.assertEqual(args.exact_refine_seconds, 45.0)
@@ -96,7 +97,8 @@ class ExactModeOptInTests(unittest.TestCase):
         self.assertTrue(args.experimental_exact_sampling)
         self.assertEqual((args.exact_budget_seconds, args.exact_lanes, args.exact_refine_seconds), (5.0, 2, 0.0))
 
-    def test_predictor_keeps_exact_mode_off_by_default(self):
+    def test_predictor_class_needs_exact_mode_requested(self):
+        # The CLI turns it on; constructing the class alone starts no workers.
         parameters = inspect.signature(LatestV6V2Predictor.__init__).parameters
         self.assertIs(parameters["exact_sampling"].default, False)
 

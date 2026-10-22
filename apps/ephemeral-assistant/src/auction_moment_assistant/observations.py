@@ -61,6 +61,9 @@ class ObservationSnapshot:
     map_rows_source: str
     pre_bid_confirmed: bool
     pre_bid_source: str
+    # Per-round decision record from packet capture; present only while the
+    # store holds exactly what capture gave for this round (no edits since).
+    packet_decision: dict | None = None
 
 
 def _quality_first_round(
@@ -99,6 +102,7 @@ class ObservationStore:
             int, tuple[int | None, bool, str]
         ] = {}
         self._pre_bid_rounds: dict[int, str] = {}
+        self._packet_decision: tuple[int, int, dict] | None = None
         self._frame: np.ndarray | None = None
 
     @property
@@ -176,6 +180,42 @@ class ObservationStore:
                 ):
                     self._map_items[key] = observed
             return self._changed()
+
+    def apply_packet_snapshot(self, snapshot: ObservationSnapshot) -> int:
+        """Take one round's evidence from packet capture; human corrections still win."""
+        with self._lock:
+            round_number = max(1, min(5, int(snapshot.round_number)))
+            self._round_number = round_number
+            for raw in snapshot.events:
+                key = (int(raw["round_number"]), str(raw["kind"]))
+                previous = self._events.get(key)
+                if previous is not None and previous.human_locked:
+                    continue
+                self._events[key] = EventObservation(**copy.deepcopy(dict(raw)))
+            captured = {}
+            for raw in snapshot.map_items:
+                item = MapObservation(**copy.deepcopy(dict(raw)))
+                captured[item.key] = item
+            for key, previous in list(self._map_items.items()):
+                if not previous.human_locked and key not in captured:
+                    del self._map_items[key]
+            for key, item in captured.items():
+                previous = self._map_items.get(key)
+                if key in self._suppressed_map_keys or (previous is not None and previous.human_locked):
+                    continue
+                self._map_items[key] = item
+            if self._map_extent_by_round.get(round_number, (None, False, ""))[2] != "human_confirmed":
+                self._map_extent_by_round[round_number] = (
+                    snapshot.map_rows, bool(snapshot.map_height_exact), snapshot.map_rows_source,
+                )
+            if self._complete_rounds.get(round_number) != "human_confirmed":
+                self._complete_rounds[round_number] = snapshot.completeness_source
+            if snapshot.pre_bid_confirmed and self._pre_bid_rounds.get(round_number) != "human_confirmed":
+                self._pre_bid_rounds[round_number] = snapshot.pre_bid_source
+            revision = self._changed()
+            if snapshot.packet_decision is not None:
+                self._packet_decision = (revision, round_number, copy.deepcopy(snapshot.packet_decision))
+            return revision
 
     def correct_event(
         self,
@@ -326,7 +366,14 @@ class ObservationStore:
                 pre_bid_source=self._pre_bid_rounds.get(
                     self._round_number, "missing"
                 ),
+                packet_decision=self._current_packet_decision(),
             )
+
+    def _current_packet_decision(self) -> dict | None:
+        held = self._packet_decision
+        if held is None or held[0] != self._revision or held[1] != self._round_number:
+            return None
+        return copy.deepcopy(held[2])
 
     def preview_snapshot(
         self, round_number: int, events: Iterable[EventObservation]
@@ -394,4 +441,5 @@ class ObservationStore:
             self._complete_rounds.clear()
             self._map_extent_by_round.clear()
             self._pre_bid_rounds.clear()
+            self._packet_decision = None
             return self._changed()

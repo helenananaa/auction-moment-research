@@ -17,6 +17,7 @@ ISSUE_LABELS = {
     "numeric_constraints_infeasible": "当前数值条件在生成模型支持范围内无解",
     "unsupported_evidence": "存在当前推断暂不支持的证据",
     "ocr_adapter_not_packet_equivalent": "OCR 证据不等价于结构化协议输入",
+    "packet_capture_inputs": "输入来自被动抓包（仅出价前可见的事件与揭示）",
     "interval_uncalibrated": "当前区间尚未校准",
     "missing_event": "存在尚未识别的轮次事件",
     "map_completeness_not_confirmed": "地图完整性尚未确认",

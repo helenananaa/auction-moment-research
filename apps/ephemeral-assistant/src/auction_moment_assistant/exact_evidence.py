@@ -301,6 +301,94 @@ def evidence_from_snapshot(
     )
 
 
+def evidence_from_decision(decision: dict, catalog: Sequence[CatalogItem]) -> ExactEvidence:
+    """Exact sampler evidence from a packet-capture decision record.
+
+    Capture shows which items every random reveal drew and the map height
+    from the match opening, so nothing has to be attributed from the map.
+    The translation is the one the sampler was benchmarked with.
+    """
+    from .exact_sampler import Evidence
+
+    ignored: list[str] = []
+    unsupported: list[str] = []
+    quality_index = {quality: index for index, quality in enumerate(QUALITY_ORDER)}
+    size_index = {f"{width}x{height}": index for index, (width, height) in enumerate(SIZES)}
+    ev = Evidence(map_rows=decision.get("map_rows"))
+    if ev.map_rows is None:
+        ignored.append("map_rows_missing")
+
+    def put(target: dict, key, value, label: str) -> None:
+        if key in target and target[key] != value:
+            unsupported.append(f"conflicting_clues:{label}")
+        target[key] = value
+
+    def put_scalar(name: str, value, label: str) -> None:
+        previous = getattr(ev, name)
+        if previous is not None and previous != value:
+            unsupported.append(f"conflicting_clues:{label}")
+        setattr(ev, name, value)
+
+    def identity_index(value: int, quality) -> int:
+        matching = [index for index, item in enumerate(catalog)
+                    if item.value == value and (quality is None or item.quality == quality)]
+        if len(matching) != 1:
+            raise ValueError("revealed value does not match one catalog item")
+        return matching[0]
+
+    identity_items: dict[int, int] = {}
+    quality_items: dict[int, int] = {}
+    for event in decision.get("events") or []:
+        effect = str(event.get("effect") or "")
+        label = f"R{event.get('round')}:{event.get('scope')}:{effect}"
+        try:
+            group, value = event["group_value"], int(event["observed_value"])
+            if effect == "quality_item_count":
+                put(ev.count, quality_index[group], value, label)
+            elif effect in COUNT_BY_QUALITY:
+                put(ev.count, quality_index[group], int(event["reported_item_count"]), label)
+            elif effect == COUNT_BY_SIZE:
+                put(ev.size_count, size_index[group], int(event["reported_item_count"]), label)
+            elif effect == "highest_quality":
+                put_scalar("highest", value - 1, label)
+            elif effect == LARGEST_OUTLINE:
+                put_scalar("largest_area", int(event["reported_cell_count"]), label)
+            elif effect in {"max_item_value", "max_value_per_cell"}:
+                if value < 0:
+                    unsupported.append(f"empty_world_sentinel:{label}")
+                    continue
+                put_scalar("max_value" if effect == "max_item_value" else "max_per_cell", value, label)
+            elif effect == "total_occupied_cells":
+                put_scalar("total_cells", value, label)
+            elif effect == "quality_average_area":
+                put(ev.avg_area, quality_index[group], (value, int(event["value_scale"])), label)
+            elif effect == "quality_total_value":
+                put(ev.total_value, quality_index[group], value, label)
+            elif effect == "size_average_value":
+                put(ev.size_avg_value, size_index[group], value, label)
+            elif effect == RANDOM_POSITION:
+                ignored.append(f"position_only_reveal:{label}")
+            elif effect not in {RANDOM_IDENTITY, RANDOM_QUALITY}:
+                unsupported.append(f"unsupported_effect:{label}")
+            if effect in {RANDOM_IDENTITY, RANDOM_QUALITY}:
+                for item in event.get("items") or []:
+                    if item.get("value"):
+                        identity_items[int(item["index"])] = identity_index(int(item["value"]), item.get("quality"))
+                    elif item.get("quality"):
+                        quality_items[int(item["index"])] = quality_index[item["quality"]]
+        except (KeyError, TypeError, ValueError, OverflowError):
+            unsupported.append(f"invalid_event_fields:{label}")
+    if len(ev.size_avg_value) > 1:
+        unsupported.append("multiple_size_average_clues")
+    ev.revealed_identities = Counter(identity_items.values())
+    ev.revealed_qualities = Counter(q for index, q in quality_items.items() if index not in identity_items)
+    return ExactEvidence(
+        evidence=None if unsupported else ev,
+        ignored=tuple(dict.fromkeys(ignored)),
+        unsupported=tuple(dict.fromkeys(unsupported)),
+    )
+
+
 def evidence_seed(snapshot: ObservationSnapshot) -> int:
     """A seed fixed by the evidence, so the same evidence gives the same estimate."""
     payload = json.dumps(
