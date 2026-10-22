@@ -856,10 +856,14 @@ def _sa_pair(count1, value1, g2s, shown, exact_count):
 
 
 def _sa_group_index(pool, group_of):
-    if "sa_groups" not in pool.lookup:
+    # A pool can be grouped more than one way (size-X count k, or a (count, value)
+    # pair), and a pool reused across rounds can meet both, so the index is kept
+    # per grouping. The entry holds group_of, so its id stays unique while cached.
+    key = ("sa_groups", id(group_of))
+    if key not in pool.lookup:
         order = np.argsort(group_of, kind="stable")
-        pool.lookup["sa_groups"] = (order, group_of[order], np.concatenate([[0.0], np.cumsum(pool.cw[order])]))
-    return pool.lookup["sa_groups"]
+        pool.lookup[key] = (order, group_of[order], np.concatenate([[0.0], np.cumsum(pool.cw[order])]), group_of)
+    return pool.lookup[key][:3]
 
 
 def _sa_pick_in_group(pool, group_of, groups, rng):
@@ -872,7 +876,8 @@ def _sa_pick_in_group(pool, group_of, groups, rng):
 
 
 def _sa_last_lookup(ctx, pool, group_of, need_mask, radix):
-    key = ("sa_last", need_mask, ctx.ev.total_cells is not None, tuple(ctx.exact_sizes))
+    # Per grouping, as in _sa_group_index.
+    key = ("sa_last", id(group_of), need_mask, ctx.ev.total_cells is not None, tuple(ctx.exact_sizes))
     if key not in pool.lookup:
         mk = pool.cells.copy() if ctx.ev.total_cells is not None else np.zeros(len(pool.cw), np.int64)
         for s in ctx.exact_sizes:
@@ -880,8 +885,8 @@ def _sa_last_lookup(ctx, pool, group_of, need_mask, radix):
         combined = group_of * SA_GROUP_SHIFT + mk
         eligible = np.flatnonzero((pool.flag_bits & need_mask) == need_mask)
         order = eligible[np.argsort(combined[eligible], kind="stable")]
-        pool.lookup[key] = (combined[order], order, np.concatenate([[0.0], np.cumsum(pool.cw[order])]))
-    return pool.lookup[key]
+        pool.lookup[key] = (combined[order], order, np.concatenate([[0.0], np.cumsum(pool.cw[order])]), group_of)
+    return pool.lookup[key][:3]
 
 
 def _sa_split(states):
