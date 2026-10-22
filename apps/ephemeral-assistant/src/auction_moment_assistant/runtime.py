@@ -534,10 +534,13 @@ class InferenceCoordinator:
 
     def prewarm(self, store: ObservationStore, round_number: int, capture: OcrCapture) -> bool:
         """Let a predictor that supports it start on the round's events early."""
+        return self.prewarm_snapshot(store.preview_snapshot(round_number, capture.events))
+
+    def prewarm_snapshot(self, snapshot) -> bool:
         prewarm = getattr(self.predictor, "prewarm", None)
         if not callable(prewarm):
             return False
-        return bool(prewarm(store.preview_snapshot(round_number, capture.events)))
+        return bool(prewarm(snapshot))
 
     def refine(self, store: ObservationStore, result: PredictionResult) -> bool:
         """Keep refining a current estimate that ran out of time, if the predictor can."""

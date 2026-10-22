@@ -22,7 +22,7 @@ def default_treasures_path() -> Path:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="无抓包、无会话持久化的 OCR/YOLO 实时研究助手"
+        description="默认被动抓包、可选 OCR/YOLO、无会话持久化的实时研究助手（仅人工参考）"
     )
     parser.add_argument(
         "--models",
@@ -44,6 +44,29 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--device", default="auto")
     parser.add_argument("--minimum-ocr-confidence", type=float, default=0.85)
     parser.add_argument(
+        "--input",
+        choices=("packet", "ocr"),
+        default="packet",
+        help="证据来源：packet 为被动抓包（默认，需 root 模拟器内的 tcpdump），ocr 为截图 OCR/YOLO",
+    )
+    parser.add_argument(
+        "--packet-pcap",
+        type=Path,
+        help="抓包模式下改为回放 PCAP 文件，而不是实时抓包",
+    )
+    parser.add_argument("--packet-interface", default="wlan0", help="模拟器内抓包的网卡")
+    parser.add_argument("--protocol-port", type=int, default=8002)
+    parser.add_argument(
+        "--event-codebook",
+        type=Path,
+        help="事件代码表；默认使用 --treasures 同目录的 event_catalog.csv",
+    )
+    parser.add_argument(
+        "--v6-only",
+        action="store_true",
+        help="不使用默认的精确条件后验，只用冻结 v6 估值",
+    )
+    parser.add_argument(
         "--experimental-v2-fusion",
         action="store_true",
         help="实验性启用 v2 原融合规则；默认使用 v6，v2 仅供诊断",
@@ -62,7 +85,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--experimental-exact-sampling",
         action="store_true",
-        help="启用精确条件后验采样研究模式（多进程，需 scipy），尚待独立验证；不可用时回退 v6",
+        help="精确条件后验现为默认估值器，此选项保留以兼容旧命令",
     )
     parser.add_argument(
         "--exact-budget-seconds",
@@ -93,6 +116,11 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def exact_enabled(args: argparse.Namespace) -> bool:
+    """The exact posterior is the default unless v6-only or another v2 mode is chosen."""
+    return not (args.v6_only or args.experimental_v2_fusion or args.experimental_conditional_sampling)
+
+
 def run(args: argparse.Namespace) -> int:
     manifest = load_release_manifest(args.model_manifest)
     if args.download_models:
@@ -117,15 +145,20 @@ def run(args: argparse.Namespace) -> int:
             )
         )
         return 0
-    from .capture import AdbFrameSource
     from .latest_model import LatestV6V2Predictor
     from .observations import ObservationStore
-    from .ocr import FixedLayoutOCR
-    from .runtime import CapturePipeline, InferenceCoordinator
+    from .runtime import InferenceCoordinator
     from .ui import AssistantWindow
-    from .vision import UltralyticsVisionBackend, VisionRecognizer
 
+    if not 1 <= int(args.protocol_port) <= 65535:
+        raise ValueError("--protocol-port 必须在 1 到 65535 之间")
+    exact = exact_enabled(args)
     catalog = load_catalog(args.treasures)
+    codebook = None
+    if args.input == "packet":
+        from .packet_session import load_codebook
+
+        codebook = load_codebook(args.event_codebook or Path(args.treasures).parent / "event_catalog.csv")
     predictor = LatestV6V2Predictor(
         v6_model_path=model_paths["latest_value_model_v6"],
         world_model_v2_path=model_paths["generative_world_model_v2"],
@@ -136,11 +169,55 @@ def run(args: argparse.Namespace) -> int:
         conditional_budget_seconds=args.conditional_budget_seconds,
         conditional_sampling=args.experimental_conditional_sampling,
         experimental_v2_fusion=args.experimental_v2_fusion,
-        exact_sampling=args.experimental_exact_sampling,
+        exact_sampling=exact,
         exact_budget_seconds=args.exact_budget_seconds,
         exact_lanes=args.exact_lanes,
         exact_refine_seconds=args.exact_refine_seconds,
     )
+    store = ObservationStore()
+    inference = InferenceCoordinator(predictor)
+    try:
+        if args.input == "packet":
+            window = _packet_window(args, store, inference, catalog, codebook, exact)
+        else:
+            window = _ocr_window(args, store, inference, catalog, model_paths, exact)
+        window.run()
+    finally:
+        inference.close()
+    return 0
+
+
+def _packet_window(args, store, inference, catalog, codebook, exact):
+    from .packet_capture import AdbPacketCapture, PcapFilePacketSource
+    from .packet_session import PacketGame, PacketMonitor
+    from .ui import AssistantWindow
+
+    def source(listener):
+        if args.packet_pcap is not None:
+            return PcapFilePacketSource(args.packet_pcap, listener, protocol_port=args.protocol_port)
+        return AdbPacketCapture(
+            listener, adb=args.adb, serial=args.serial,
+            interface=args.packet_interface, protocol_port=args.protocol_port,
+        )
+
+    monitor = PacketMonitor(
+        source, PacketGame(codebook, catalog), store,
+        # The exact sampler starts on each round's public offer.
+        on_preview=inference.prewarm_snapshot if exact else None,
+    )
+    return AssistantWindow(
+        store=store, pipeline=None, inference=inference, catalog=catalog, monitor=monitor,
+        title="Auction Moment · 抓包估值助手（仅人工参考）",
+    )
+
+
+def _ocr_window(args, store, inference, catalog, model_paths, exact):
+    from .capture import AdbFrameSource
+    from .ocr import FixedLayoutOCR
+    from .runtime import CapturePipeline
+    from .ui import AssistantWindow
+    from .vision import UltralyticsVisionBackend, VisionRecognizer
+
     source = AdbFrameSource(adb=args.adb, serial=args.serial)
     ocr = (
         None
@@ -151,8 +228,6 @@ def run(args: argparse.Namespace) -> int:
     if not args.no_vision:
         backend = UltralyticsVisionBackend(model_paths, device=args.device)
         vision = VisionRecognizer(backend, catalog)
-    store = ObservationStore()
-    inference = InferenceCoordinator(predictor)
     pipeline = CapturePipeline(
         source=source,
         store=store,
@@ -161,27 +236,22 @@ def run(args: argparse.Namespace) -> int:
         # Exact mode starts sampling on the round's events while the map scrolls.
         on_round_events=(
             (lambda round_number, capture: inference.prewarm(store, round_number, capture))
-            if args.experimental_exact_sampling
+            if exact
             else None
         ),
     )
-    window = AssistantWindow(
+    return AssistantWindow(
         store=store,
         pipeline=pipeline,
         inference=inference,
         catalog=catalog,
     )
-    try:
-        window.run()
-    finally:
-        inference.close()
-    return 0
 
 
 def main() -> int:
     try:
         return run(build_parser().parse_args())
-    except (ModelError, OSError, ValueError) as exc:
+    except (ModelError, OSError, ValueError, RuntimeError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 
