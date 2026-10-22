@@ -1,0 +1,76 @@
+{
+  "schema_version": "assistant-prediction-repair-validation-v1",
+  "checks": {
+    "assistant_unittest_count": 170,
+    "assistant_unittest_passed": true,
+    "research_unittest_count": 7,
+    "research_unittest_passed": true,
+    "changed_package_helpers_tests_and_scripts_ruff_passed": true,
+    "pip_check_passed": true,
+    "git_diff_check_passed": true,
+    "assistant_runtime_privacy_scan_passed": true,
+    "public_artifact_scan_passed": true,
+    "wheel_build_and_isolated_target_import_passed": true,
+    "wheel_all_python_source_files_equal_current_tree": 31,
+    "wheel_default_point_is_v6_and_experimental_flags_default_false": true,
+    "public_empirical_counts_unchanged_after_metadata_hardening": true
+  },
+  "assistant_wheel": {
+    "path": "build/prediction-policy-wheels-20261019/auction_moment_assistant-0.2.0b6-py3-none-any.whl",
+    "sha256": "4cd8f27eeccc11c5ed3e88d28cd624d5fd93c7f3510deff4a8076a645a323a9d"
+  },
+  "runtime_source_sha256": {
+    "apps/ephemeral-assistant/src/generative_world_model_v2.py": "21b61c7ff53f7c493307a68f155b0ef1804133fbd9d8588a83ab9eacbaca5af6",
+    "apps/ephemeral-assistant/src/protocol_additive_value_model.py": "2f820f28c9382c05a7c373ed01b6c5d525ff2e9f6f315fb5b7996c9a0673e6b2",
+    "apps/ephemeral-assistant/src/protocol_analog_value_model.py": "5040c50b24afb5eafba823badb105b46c870dfe11e50b8639bbbc198039029be",
+    "apps/ephemeral-assistant/src/protocol_packet_residual_features.py": "abe6b6e3a3095ae6d7d9a866c3995dc3216d743664035b1aeee627aa218f7200",
+    "apps/ephemeral-assistant/src/protocol_position_quality_augment_model.py": "5808e92230c47b20a10896791bcb2ab19ddc4495654a55c73e624593e28a992b",
+    "apps/ephemeral-assistant/src/protocol_purple_area_augment_model.py": "8f8d4f1d8ba04739ae53ad615ecc5f5fa16d294137cff0db416f3e469f91dc1a",
+    "apps/ephemeral-assistant/src/protocol_repeated_quality_sampling.py": "e6990649b8a5a9afd629359992b8f137b1db4920fcae5a8075eb0b96c3176427",
+    "apps/ephemeral-assistant/src/protocol_round_residual_model.py": "f5d05ef2145fe9274aac0e4121d9b584cecff11d7c37247db8016faca1e22ae4",
+    "apps/ephemeral-assistant/src/structural_value_features.py": "d2f6fc113b8f327b9a033c1486db2dbe3f58067310e6781ffb42ec006a21f82e",
+    "apps/ephemeral-assistant/src/train_supervised_value_model.py": "0d10df40f8d8bf7b4a0c3cb6a123891a53b449a2e7e3610bf036f34e153674a1",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/capture.py": "c1a13c5c35a1639efaed85b5dc51d9564ebd48b6be954dff079d291d96021b59",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/cli.py": "c40652f10f736331b1f08f4dfc06fdaeae5617c876b3f9dee3cd21e087021cb5",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_constraints.py": "d32824ceca96456416892a1c6e73c8ea915025a353821f7ad7a53bb4e45329e4",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_count_moves.py": "952250eeafae8051e535d718c315297648ad32b825f850e3ea12d449d4f12602",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_sampler.py": "cf25755715933aac8551a2c5b9c7e7e55ad831f4fad956a51cb5e2b391eca510",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/latest_model.py": "831c0865fbfc89cd7e09fdcd7d75697641e2de38f9c9c946b33c8204534c027e",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/map_editor.py": "ab8a9502894f5729870c810033932f4542dda4e94c8feed270751a08b92b79a4",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/models.py": "4ac14971bc2a9c37e3053dbb8249ac7730ef40c45c3d3976c4dd5607b0752055",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/observations.py": "51aff024530a453763585b45d41bb6d835a07ff2633fc4ce9292a98e1626906e",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/ocr.py": "e8c8d504185d8b55b89bcf886791ec088f2c71b36d13a846913d70071353deea",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/predictor.py": "c26148c750264382c7aa1bd6f3c6ab817e86ef3c4dd807cf42eaffd135bc32c6",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/presentation.py": "b2f723870a24401f729b2a86d69eb2cc07240ee904dcf37c2622b42b5fbf82b7",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/prior_quality.py": "4c2a07b4f573151db1f1adb2df29a469e2f876326bba2e79c30d3f0e634b2852",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/reveal_likelihood.py": "570bcb63386dd8b998d100bf45900fd8e49691d214879eed928ae8e7e7cba46d",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/runtime.py": "335c978c1c04f21b0011c5740820bf6683c650c1ffc26aefca14eb07faccdc7f",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/semantics.py": "b641e0b362021f9b517621e6843f076f031659cc1522436b9fc48fbcb7859b5a",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/state_machine.py": "3ec4796b70e830dd34a5bf6999fcc98c85548d786c4ee87bd00af3d3c9dd9447",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/ui.py": "d2bea6e25c169a75498fc93471094422ac1820348f9c08d4c78f002667cc8ebd",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/vision.py": "813e45e8e8d272f785adacf097220fc6173a0910b7745c71b2a65a7f5c99f7ee",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/world_layout.py": "59cb94490acd009fe20a735230b8cc501f84162798353837f2e6e2988e5527a0",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/__init__.py": "1ac0e20078ba96591d3fddfeb889b25e231e28a8d3de300925c7c10e1386ee98"
+  },
+  "receipt_on_disk_sha256": {
+    "results/ocr-reveal-adapter-consumed74-full-fusion-ABC-aggregate-20261019.json": "e602c02fa8805b03b42f05ef89181a6e044326c0c3093b89660b8bafe03f6dcb",
+    "results/ocr-reveal-adapter-consumed74-aggregate-20261019.json": "a4894ecd73b19f87937e045756e2a1205c6562135ca8d4eef47d4ab571db58f8",
+    "results/assistant-default-point-policy-review-20261019.json": "b0ef241fafe089e22d8f33ce5628e7aacb51c04fe92c9e5069f85e5ccd97f621",
+    "results/prior-quality-metadata-hardening-verification-20261019.json": "0e9da3ad328fdbe0be2a1ec3bfb5c211add66a909e3f0185851a8185bbcd8432"
+  },
+  "post_benchmark_changes": [
+    "Select corrected v6 as a temporary default after seeing consumed-cohort results; v2 point fusion requires explicit opt-in.",
+    "Reject missing review metadata; existing public empirical counts remain elementwise unchanged.",
+    "Use a different seed only for conditional attempts after the first; first-attempt seed and kernel unchanged.",
+    "Present default v6 as an intentional policy rather than fused output or a failed inference."
+  ],
+  "boundaries": {
+    "current_source_identical_to_ABC_frozen_run": false,
+    "original_benchmark_receipts_overwritten": false,
+    "new_training_or_weight_tuning": false,
+    "fresh_blind_test": false,
+    "actual_ocr_or_formal_full_match_validated": false,
+    "full_public_release_validator_passed": false,
+    "new_release_published": false
+  }
+}

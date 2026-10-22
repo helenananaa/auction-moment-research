@@ -321,9 +321,101 @@ def _exact_colour_count(decision: Mapping) -> int | None:
     return value
 
 
+OCR_REVEAL_ATTRIBUTION_SCHEMA = "ocr-first-reveal-single-source-v1"
+
+
+def _certified_ocr_reveal_events(decision: Mapping) -> frozenset[tuple[int, str, str]]:
+    """Recognize the reviewed OCR adapter's explicit sample attribution.
+
+    Thresholded OCR is never promoted to packet-exact or human-confirmed.
+    Other callers retain the original exact-item contract.
+    """
+    native = decision.get("native_evidence") or {}
+    attribution = decision.get("reveal_attribution") or {}
+    if (
+        decision.get("adapter_schema_version") != "ocr-visible-pre-bid-adapter-v1"
+        or native.get("mode") != "ocr_visible_pre_bid_v1"
+        or native.get("pre_bid_proven") is not True
+        or native.get("ocr_used_for_live_features") is not True
+        or native.get("settlement_or_final_truth_in_features") is not False
+        or attribution.get("schema_version") != OCR_REVEAL_ATTRIBUTION_SCHEMA
+    ):
+        return frozenset()
+    result = set()
+    for certificate in attribution.get("certified_events") or []:
+        try:
+            event_round = int(certificate["round"])
+            sample_size = int(certificate["sample_size"])
+            effect = str(certificate["source_effect"])
+            kind = str(certificate["event_kind"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if (
+            certificate.get("attribution_schema") != OCR_REVEAL_ATTRIBUTION_SCHEMA
+            or not 0 < event_round <= int(decision.get("round") or 0)
+            or sample_size <= 0
+            or kind not in {"public", "personal"}
+            or effect not in {"reveal_identity_random", "reveal_position_quality_random"}
+        ):
+            continue
+        matching = [
+            event for event in decision.get("events") or []
+            if int(event.get("round") or 0) == event_round
+            and event.get("kind") == kind
+            and (event.get("semantics") or {}).get("effect") == effect
+            and (event.get("semantics") or {}).get("count") == sample_size
+            and (event.get("semantics") or {}).get("parsed") is True
+            and (event.get("semantics") or {}).get("protocol_source")
+            in {"ocr_thresholded", "human_confirmed"}
+        ]
+        try:
+            confidence = float(matching[0].get("ocr_confidence") or 0.0) if matching else 0.0
+        except (TypeError, ValueError):
+            confidence = 0.0
+        if len(matching) == 1 and math.isfinite(confidence) and confidence >= 0.85:
+            result.add((event_round, effect, kind))
+    return frozenset(result)
+
+
+def _supported_reveal_attributes(
+    item: Mapping, decision: Mapping, history: Mapping
+) -> bool:
+    """Accept exact legacy evidence or attributed thresholded OCR evidence."""
+    effect = str(history.get("source_effect") or "")
+    identity = item.get("identity") or {}
+    exact = {"protocol_exact", "human_confirmed"}
+    quality_status = item.get("quality_validation")
+    identity_status = identity.get("match_confidence_status")
+    if quality_status in exact and (
+        effect != "reveal_identity_random" or identity_status in exact
+    ):
+        return True
+    if quality_status not in exact | {"ocr_thresholded"} or (
+        effect == "reveal_identity_random"
+        and identity_status not in exact | {"ocr_thresholded"}
+    ):
+        return False
+    try:
+        confidence = float(item.get("quality_confidence") or 0.0)
+        evidence_confidence = float(item.get("evidence_confidence") or 0.0)
+        event_key = (
+            int(history.get("round") or 0), effect,
+            str(history.get("event_kind") or ""),
+        )
+    except (TypeError, ValueError):
+        return False
+    return bool(
+        math.isfinite(confidence) and confidence >= 0.85
+        and math.isfinite(evidence_confidence) and evidence_confidence >= 0.85
+        and history.get("attribution_schema") == OCR_REVEAL_ATTRIBUTION_SCHEMA
+        and event_key in _certified_ocr_reveal_events(decision)
+    )
+
+
 def _random_identity_quality_sample(decision: Mapping) -> dict:
     expected = 0
     event_rounds = []
+    certified = _certified_ocr_reveal_events(decision)
     for event in decision.get("events") or []:
         if not isinstance(event, Mapping):
             continue
@@ -354,6 +446,12 @@ def _random_identity_quality_sample(decision: Mapping) -> dict:
             raise ProtocolAnalogValueModelError(
                 "随机身份揭示 count/round 无效"
             )
+        if certified and (
+            event_round, "reveal_identity_random", str(event.get("kind") or "")
+        ) not in certified:
+            # The OCR store does not retain later attribute histories. Only
+            # the first safely attributed sample belongs to this likelihood.
+            continue
         expected += count
         event_rounds.append(event_round)
 
@@ -372,16 +470,14 @@ def _random_identity_quality_sample(decision: Mapping) -> dict:
         ]
         if not history:
             continue
-        identity = item.get("identity") or {}
         quality = str(item.get("quality") or "")
         track_id = str(item.get("track_id") or "")
         if (
             not track_id
             or quality not in QUALITY_ORDER
-            or identity.get("match_confidence_status")
-            not in {"protocol_exact", "human_confirmed"}
-            or item.get("quality_validation")
-            not in {"protocol_exact", "human_confirmed"}
+            or not all(
+                _supported_reveal_attributes(item, decision, row) for row in history
+            )
         ):
             return {
                 "status": "feature_rejected_invalid_exact_item",

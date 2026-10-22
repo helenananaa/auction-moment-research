@@ -1,0 +1,57 @@
+{
+  "schema_version": "consumed74-default-point-policy-review-v1",
+  "review_kind": "independent_receipt_recalculation_and_posthoc_temporary_default_selection",
+  "decision_made_after_seeing_consumed_cohort": true,
+  "new_blind_validation": false,
+  "current_policy": "corrected_v6_point_with_v2_diagnostics_and_explicit_experimental_fusion",
+  "reason": "Both MAPE and WAPE of the corrected v6 alone are below all three reconstructed fusion arms on this consumed cohort; no fusion weights were tuned.",
+  "limitations": [
+    "Temporary engineering default chosen after this retrospective diagnosis; not an independently tested model-selection result.",
+    "All 74 games were already consumed; inputs are ideal prebid transcriptions and do not include real OCR recognition errors.",
+    "Empirical target overlap is unknown; neither the fusion comparison nor default selection qualifies a fresh temporal holdout.",
+    "The published executable was not run. Arm A reconstructs its point-fusion rules using controlled transcriptions.",
+    "No new training, per-round fitting, case removal, interval calibration or return qualification was performed."
+  ],
+  "cohort": {
+    "session_count": 74,
+    "decision_count": 277,
+    "failed_decision_count": 0
+  },
+  "verification": {
+    "immutable_receipt_hashes_matched": true,
+    "same_ordered_cases_labels_feature_planes_and_prefix_receipts": 277,
+    "recomputed_fusion_point_and_weight_matches": 831,
+    "all_sources_and_artifacts_stable_during_fusion_replay": true,
+    "overall_metrics_independently_recomputed": true
+  },
+  "receipt_sha256": {
+    "v6_adapter_pair": "ef5a2e2ae73b885bfa84f5b1cf6417b9d8121f2ffe91f9c55fa421efe09b7b05",
+    "full_fusion_ABC": "697d1ea62dbbf9e49e6c0561447a3fec4ecbc27c911a592158889ce5fe4523ac"
+  },
+  "metrics": {
+    "A_legacy_adapter_unsafe_prior": {
+      "case_count": 277,
+      "mape_percent": 25.58275778708653,
+      "wape_percent": 19.85367816906362,
+      "mae_currency_units": 819551.0397111913
+    },
+    "B_fixed_adapter_same_unsafe_prior": {
+      "case_count": 277,
+      "mape_percent": 24.24773681958163,
+      "wape_percent": 18.986028039163788,
+      "mae_currency_units": 783734.8267148015
+    },
+    "C_fixed_adapter_clean_prior": {
+      "case_count": 277,
+      "mape_percent": 24.077201515712055,
+      "wape_percent": 18.882114224267173,
+      "mae_currency_units": 779445.3104693141
+    },
+    "D_corrected_v6_only_temporary_default": {
+      "case_count": 277,
+      "mape_percent": 22.475381835288086,
+      "wape_percent": 18.26474986947084,
+      "mae_currency_units": 753960.7833935018
+    }
+  }
+}

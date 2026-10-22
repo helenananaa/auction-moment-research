@@ -21,6 +21,7 @@ from protocol_analog_value_model import (
     ProtocolAnalogValueModelError,
     _exact_colour_count,
     _multivariate_hypergeometric_log_likelihood,
+    _supported_reveal_attributes,
     _weighted_quantile,
 )
 
@@ -123,15 +124,7 @@ def extract_event_quality_samples(decision: Mapping) -> dict:
             valid = bool(
                 track_id
                 and quality in QUALITY_ORDER
-                and item.get("quality_validation")
-                in {"protocol_exact", "human_confirmed"}
-                and (
-                    key[1] != "reveal_identity_random"
-                    or (
-                        item.get("identity") or {}
-                    ).get("match_confidence_status")
-                    in {"protocol_exact", "human_confirmed"}
-                )
+                and _supported_reveal_attributes(item, decision, row)
             )
             if not valid:
                 invalid_keys.add(key)
