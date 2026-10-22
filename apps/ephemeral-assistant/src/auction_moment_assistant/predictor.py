@@ -63,6 +63,8 @@ class PredictionResult:
     posterior_converged: bool = False
     posterior_method: str = "empirical_filter"
     conditional_diagnostics: Mapping | None = None
+    # Experimental exact mode: the error-minimising point, shown next to P10-P90.
+    point_estimate: int | None = None
 
 
 class EmpiricalWorldPredictor:

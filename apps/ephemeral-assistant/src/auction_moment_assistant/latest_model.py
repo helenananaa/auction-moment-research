@@ -27,6 +27,13 @@ FUSION_WEIGHT_BY_EFFECTIVE_SAMPLES = (
 FUSION_POLICY = "converged_effective_support_cap_v1"
 RELEASED_FUSION_POLICY = "released_event_count_heuristic_uncalibrated"
 DEFAULT_POINT_POLICY = "v6_only_pending_fusion_qualification"
+EXACT_POSTERIOR_METHOD = "exact_constraint_importance_sampling"
+# The 1/value-weighted posterior median minimises expected absolute % error.
+EXACT_POINT_POLICY = "mape_optimal_weighted_median"
+DEFAULT_EXACT_BUDGET_SECONDS = 8.0
+DEFAULT_EXACT_LANES = 4
+# A decision cut by the budget keeps running in the background this long.
+DEFAULT_EXACT_REFINE_SECONDS = 45.0
 DEFAULT_BID_SAFETY_FACTOR = 0.90
 ROUND_WINNING_MULTIPLIERS = {1: 2.0, 2: 1.6, 3: 1.3, 4: 1.1, 5: 1.0}
 STRONG_CONDITIONING_EFFECTS = frozenset(
@@ -516,6 +523,10 @@ class LatestV6V2Predictor:
         experimental_v2_fusion: bool = False,
         conditional_budget_seconds: float = 2.0,
         bid_safety_factor: float = DEFAULT_BID_SAFETY_FACTOR,
+        exact_sampling: bool = False,
+        exact_budget_seconds: float = DEFAULT_EXACT_BUDGET_SECONDS,
+        exact_lanes: int = DEFAULT_EXACT_LANES,
+        exact_refine_seconds: float = DEFAULT_EXACT_REFINE_SECONDS,
     ) -> None:
         try:
             import joblib
@@ -532,9 +543,23 @@ class LatestV6V2Predictor:
             or float(conditional_budget_seconds) <= 0.0
         ):
             raise ValueError("conditional_budget_seconds must be finite and positive")
+        if exact_sampling and (conditional_sampling or experimental_v2_fusion):
+            raise ValueError("exact sampling cannot be combined with another v2 mode")
+        if not math.isfinite(float(exact_budget_seconds)) or float(exact_budget_seconds) <= 0.0:
+            raise ValueError("exact_budget_seconds must be finite and positive")
+        if int(exact_lanes) < 1:
+            raise ValueError("exact_lanes must be at least 1")
+        if not math.isfinite(float(exact_refine_seconds)) or float(exact_refine_seconds) < 0.0:
+            raise ValueError("exact_refine_seconds must be finite and non-negative")
         self.bid_safety_factor = float(bid_safety_factor)
         self.conditional_sampling = bool(conditional_sampling)
         self.experimental_v2_fusion = bool(experimental_v2_fusion)
+        self.exact_sampling = bool(exact_sampling)
+        self.exact_budget_seconds = float(exact_budget_seconds)
+        self.exact_refine_seconds = float(exact_refine_seconds)
+        self.exact_engine = None
+        # The last decision cut by the budget, kept so it can be refined.
+        self._exact_cut = None
         self.adapter = OcrDecisionAdapter(
             catalog,
             minimum_ocr_confidence=minimum_ocr_confidence,
@@ -549,6 +574,14 @@ class LatestV6V2Predictor:
         )
         if self.world_predictor.world_model_version != "world_model_v2":
             raise LatestModelError("world-model-v2 artifact required")
+        if self.exact_sampling:
+            # Worker processes load the same frozen v2 artifact and catalog.
+            from .exact_lanes import ExactLanes
+
+            self.exact_catalog = tuple(catalog)
+            self.exact_engine = ExactLanes(
+                Path(world_model_v2_path), Path(treasures_csv), lanes=int(exact_lanes),
+            )
 
     def predict(self, snapshot: ObservationSnapshot) -> PredictionResult:
         adapted = self.adapter.adapt(snapshot)
@@ -590,6 +623,10 @@ class LatestV6V2Predictor:
         v6_p50 = int(v6["prediction"])
         v6_p10 = int(v6.get("p10") or v6_p50)
         v6_p90 = max(v6_p10, v6_p50, int(v6.get("p90") or v6_p50))
+        # Exact sampling is its own explicit opt-in; a restored predictor
+        # without the attribute keeps the default path.
+        if getattr(self, "exact_engine", None) is not None:
+            return self._exact_estimate(snapshot, adapted, v6_p10, v6_p50, v6_p90)
         try:
             world = self.world_predictor.predict(snapshot)
         except Exception as exc:
@@ -763,5 +800,230 @@ class LatestV6V2Predictor:
                 p10,
                 snapshot.round_number,
                 safety_factor=self.bid_safety_factor,
+            ),
+        )
+
+    def prewarm(self, snapshot: ObservationSnapshot) -> bool:
+        """Start the exact sampler on evidence known before the map scan ends.
+
+        Only fills caches in the worker processes (pools, clue tables) and
+        returns at once; the next prediction cancels it. False if not in
+        exact mode, the evidence cannot be used, or the workers are busy.
+        """
+        engine = getattr(self, "exact_engine", None)
+        if engine is None:
+            return False
+        from .exact_evidence import evidence_from_snapshot, evidence_seed
+
+        converted = evidence_from_snapshot(
+            snapshot,
+            self.exact_catalog,
+            minimum_confidence=self.adapter.minimum_ocr_confidence,
+            prewarm=True,
+        )
+        if not converted.usable:
+            return False
+        return engine.prewarm(converted.evidence, evidence_seed(snapshot))
+
+    def refine(self, revision: int) -> bool:
+        """Rerun the last decision cut by the time budget, without waiting.
+
+        Uses ``exact_refine_seconds`` and the caches the cut run filled; the
+        next prewarm or prediction cancels it. False if that decision is not
+        ``revision``, refinement is off, or the workers are busy.
+        """
+        import time
+
+        from .exact_evidence import evidence_seed
+
+        engine = getattr(self, "exact_engine", None)
+        cut = getattr(self, "_exact_cut", None)
+        if engine is None or cut is None or int(cut["snapshot"].revision) != int(revision):
+            return False
+        if getattr(self, "exact_refine_seconds", 0.0) <= 0.0:
+            return False
+        # A seed of its own: an independent run, not a repeat of the cut one.
+        seed = evidence_seed(cut["snapshot"]) + 1
+        if not engine.refine(cut["converted"].evidence, seed, time_budget=self.exact_refine_seconds):
+            return False
+        cut["refine_started"] = time.monotonic()
+        return True
+
+    def poll_refined(self) -> tuple[str, PredictionResult | None]:
+        """("running", None) while refining; ("done", result) once it converged.
+
+        ("done", None) when the longer run still fell short, ("gone", None)
+        when nothing is being refined (cancelled by newer work, or failed).
+        """
+        import time
+
+        engine = getattr(self, "exact_engine", None)
+        cut = getattr(self, "_exact_cut", None)
+        if engine is None or cut is None or "refine_started" not in cut:
+            return "gone", None
+        state, outcome = engine.poll_refine()
+        if state == "running":
+            return state, None
+        self._exact_cut = None
+        if state != "done" or outcome.status != "ok":
+            return ("done" if state == "done" else "gone"), None
+        diagnostics = dict(cut["diagnostics"])
+        diagnostics.update(
+            exact_refined=True,
+            exact_refine_seconds=round(time.monotonic() - cut["refine_started"], 3),
+            exact_cut_point=cut["point"],
+        )
+        return "done", self._exact_result(
+            cut["snapshot"], cut["adapted"], *cut["v6"], cut["converted"], outcome, diagnostics,
+        )
+
+    def close(self) -> None:
+        engine = getattr(self, "exact_engine", None)
+        if engine is not None:
+            engine.close()
+            self.exact_engine = None
+
+    def _exact_estimate(
+        self,
+        snapshot: ObservationSnapshot,
+        adapted: AdaptedDecision,
+        v6_p10: int,
+        v6_p50: int,
+        v6_p90: int,
+    ) -> PredictionResult:
+        """Experimental exact-constraint posterior; v6 when it cannot run."""
+        import time
+
+        from .exact_evidence import evidence_from_snapshot, evidence_seed
+
+        converted = evidence_from_snapshot(
+            snapshot,
+            self.exact_catalog,
+            minimum_confidence=self.adapter.minimum_ocr_confidence,
+        )
+        diagnostics = {
+            "experimental_exact_sampling": True,
+            "exact_lanes": self.exact_engine.lanes,
+            "exact_budget_seconds": self.exact_budget_seconds,
+            "exact_ignored_clues": list(converted.ignored),
+            "exact_unsupported": list(converted.unsupported),
+        }
+        failure = None
+        result = None
+        self._exact_cut = None
+        started = time.monotonic()
+        if not converted.usable:
+            failure = "exact_unsupported_evidence"
+        else:
+            try:
+                result = self.exact_engine.sample(
+                    converted.evidence,
+                    evidence_seed(snapshot),
+                    time_budget=self.exact_budget_seconds,
+                )
+            except Exception as exc:
+                failure = "exact_sampling_failed"
+                diagnostics["exact_error"] = f"{type(exc).__name__}: {exc}"
+            else:
+                if result.status == "no_support":
+                    failure = "exact_no_posterior_support"
+        diagnostics["exact_seconds"] = round(time.monotonic() - started, 3)
+        diagnostics["exact_prewarm_wait_seconds"] = round(getattr(self.exact_engine, "last_prewarm_wait", 0.0), 3)
+        if failure is not None:
+            diagnostics["exact_status"] = failure
+            return PredictionResult(
+                revision=snapshot.revision,
+                status="v6_fallback_exact_unavailable",
+                compatible_worlds=0,
+                p10=v6_p10,
+                p50=v6_p50,
+                p90=v6_p90,
+                minimum=None,
+                maximum=None,
+                actionable=False,
+                issues=tuple(dict.fromkeys((
+                    *adapted.warnings,
+                    failure,
+                    "exact_unavailable_using_v6_fallback",
+                    "ocr_adapter_not_packet_equivalent",
+                    "interval_uncalibrated",
+                ))),
+                contract="ocr_adapted_v6_fallback_exact_unavailable_uncalibrated",
+                v6_prediction=v6_p50,
+                generation_weight=0.0,
+                model_version=V6_CANDIDATE_ID,
+                estimate_source="v6_fallback",
+                diagnostics=tuple(f"exact_unsupported:{reason}" for reason in converted.unsupported),
+                posterior_method=EXACT_POSTERIOR_METHOD,
+                conditional_diagnostics=diagnostics,
+                **manual_bid_advice(
+                    v6_p10, snapshot.round_number, safety_factor=self.bid_safety_factor,
+                ),
+            )
+        estimate = self._exact_result(snapshot, adapted, v6_p10, v6_p50, v6_p90, converted, result, diagnostics)
+        if result.status != "ok":
+            self._exact_cut = {
+                "snapshot": snapshot, "adapted": adapted, "v6": (v6_p10, v6_p50, v6_p90),
+                "converted": converted, "diagnostics": diagnostics, "point": estimate.point_estimate,
+            }
+        return estimate
+
+    def _exact_result(
+        self,
+        snapshot: ObservationSnapshot,
+        adapted: AdaptedDecision,
+        v6_p10: int,
+        v6_p50: int,
+        v6_p90: int,
+        converted,
+        result,
+        diagnostics: dict,
+    ) -> PredictionResult:
+        """The exact-mode estimate for a sampler result that has support."""
+        diagnostics = dict(diagnostics)
+        summary = result.summary()
+        p10 = max(1, round(summary["p10"]))
+        p50 = max(p10, round(summary["p50"]))
+        p90 = max(p50, round(summary["p90"]))
+        point = round(summary["mape_opt"])
+        reliable = result.status == "ok"
+        diagnostics.update(
+            exact_status=result.status,
+            point_policy=EXACT_POINT_POLICY,
+            lane_rel_se=summary.get("lane_rel_se"),
+            sa_skip_bound=summary.get("sa_skip_bound"),
+            first_round_cut=bool(summary.get("first_round_cut")),
+            expected_ape_point=summary.get("expected_ape_mape_opt"),
+        )
+        return PredictionResult(
+            revision=snapshot.revision,
+            status="exact_v2_posterior_estimate" if reliable else "exact_v2_posterior_low_ess",
+            compatible_worlds=int(result.totals.size),
+            p10=p10,
+            p50=p50,
+            p90=p90,
+            minimum=round(float(result.totals.min())),
+            maximum=round(float(result.totals.max())),
+            actionable=False,
+            issues=tuple(dict.fromkeys((
+                *adapted.warnings,
+                *(() if reliable else ("exact_posterior_low_ess",)),
+                "ocr_adapter_not_packet_equivalent",
+                "interval_uncalibrated",
+            ))),
+            contract="ocr_adapted_exact_v2_posterior_uncalibrated",
+            v6_prediction=v6_p50,
+            v2_prediction=point,
+            generation_weight=1.0,
+            model_version=V6_CANDIDATE_ID,
+            estimate_source="exact_v2_posterior",
+            diagnostics=tuple(f"exact_ignored:{reason}" for reason in converted.ignored),
+            effective_sample_size=float(result.ess),
+            posterior_converged=reliable,
+            posterior_method=EXACT_POSTERIOR_METHOD,
+            conditional_diagnostics=diagnostics,
+            point_estimate=point,
+            **manual_bid_advice(
+                p10, snapshot.round_number, safety_factor=self.bid_safety_factor,
             ),
         )

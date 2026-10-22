@@ -22,6 +22,11 @@ ISSUE_LABELS = {
     "map_completeness_not_confirmed": "地图完整性尚未确认",
     "compatible_worlds_below_10": "兼容世界少于 10 个",
     "conditioned_resample_provisional": "v2 已按当前条件重新生成候选世界，结果仍属未校准估计",
+    "exact_posterior_low_ess": "精确条件后验有效样本不足或计算被时间预算截断",
+    "exact_unavailable_using_v6_fallback": "精确条件采样不可用，已回退到 v6",
+    "exact_unsupported_evidence": "存在精确条件采样暂不支持或相互冲突的证据",
+    "exact_sampling_failed": "精确条件采样运行失败",
+    "exact_no_posterior_support": "精确条件采样在当前条件下没有支持",
 }
 
 EFFECT_LABELS = {
@@ -120,10 +125,22 @@ def format_prediction(result: PredictionResult) -> str:
         ]
         if result.v2_prediction is not None:
             lines.append(f"v2 诊断估值（未参与融合）：{result.v2_prediction:,}")
+    elif result.estimate_source == "exact_v2_posterior":
+        lines = [
+            "状态：精确条件后验估值（实验模式）"
+            + ("" if result.status == "exact_v2_posterior_estimate" else "；有效样本不足，谨慎参考"),
+        ]
+        if result.point_estimate is not None:
+            lines.append(f"估值（期望相对误差最小点）：{result.point_estimate:,}")
+        lines.append(f"后验 P10 / P50 / P90：{result.p10:,} / {result.p50:,} / {result.p90:,}")
+        if result.v6_prediction is not None:
+            lines.append(f"v6 对照（未参与）：{result.v6_prediction:,}")
     elif result.estimate_source == "v6_fallback":
         heading = (
             "状态：v2 条件冲突，显示 v6 保守回退"
             if result.status == "v6_fallback_v2_conditioning_conflict"
+            else "状态：精确条件采样不可用，显示 v6 回退估值"
+            if result.status == "v6_fallback_exact_unavailable"
             else "状态：v2 推断支持不足，显示 v6 回退估值"
         )
         lines = [
