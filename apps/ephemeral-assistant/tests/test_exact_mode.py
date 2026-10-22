@@ -573,6 +573,39 @@ class ExactSamplerToyTests(unittest.TestCase):
 
         self.check(Evidence(total_value={3: 926}, count={0: 1}), accept)
 
+    def test_size_average_after_a_quality_total(self):
+        # A quality total makes that quality non-enumerable, so the second run
+        # leaves the k-level path while reusing the first run's cached pools.
+        from auction_moment_assistant.exact_sampler import Evidence
+
+        size, quality, values = self.prior.size, self.prior.quality, self.prior.values
+
+        def size_average(m):
+            count = int(m[size == 0].sum())
+            return count > 0 and int(m[size == 0] @ values[size == 0]) // count == 333
+
+        def gold_total(m):
+            return int(m[quality == 3] @ values[quality == 3])
+
+        mass = Counter()
+        for m, p in self.worlds:
+            if size_average(m):
+                mass[gold_total(m)] += p
+        total = max(mass, key=mass.get)
+        self.check(Evidence(size_avg_value={0: 333}), size_average)
+        self.check(Evidence(size_avg_value={0: 333}, total_value={3: total}),
+                   lambda m: size_average(m) and gold_total(m) == total)
+
+    def test_group_index_is_kept_per_grouping(self):
+        from auction_moment_assistant.exact_sampler import _sa_group_index, _sa_pick_in_group
+
+        pool = types.SimpleNamespace(lookup={}, cw=np.ones(4))
+        by_count, by_pair = np.array([1, 0, 1, 0]), np.array([3, 2, 1, 0])
+        self.assertEqual(_sa_group_index(pool, by_count)[1].tolist(), [0, 0, 1, 1])
+        self.assertEqual(_sa_group_index(pool, by_pair)[1].tolist(), [0, 1, 2, 3])
+        picked, mass = _sa_pick_in_group(pool, by_pair, np.array([3]), np.random.default_rng(0))
+        self.assertEqual((picked.tolist(), mass.tolist()), ([0], [1.0]))
+
     def test_cancel_stops_a_run(self):
         from auction_moment_assistant.exact_sampler import Cancelled, Evidence, sample_posterior
 
