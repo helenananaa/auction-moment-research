@@ -1,0 +1,404 @@
+{
+  "schema_version": "consumed74-full-fusion-ABC-public-aggregate-v1",
+  "experiment_kind": "retrospective_controlled_perfect_transcription_full_point_fusion",
+  "predeclared_arms": {
+    "A_legacy_adapter_unsafe_prior": "old v6 adapter point + original unfiltered empirical v2 + original fusion",
+    "B_fixed_adapter_same_unsafe_prior": "fixed v6 adapter point + identical unfiltered empirical v2 + identical fusion",
+    "C_fixed_adapter_clean_prior": "fixed v6 adapter point + independently audited empirical v2 + identical fusion"
+  },
+  "plan": {
+    "case_count": 277,
+    "session_count": 74,
+    "all_cases_retained": true,
+    "prior_samples": 4096,
+    "prior_seed": 20260804,
+    "conditional_sampling": false,
+    "maximum_rejection_draws": 32768,
+    "rejection_target": 32,
+    "rejection_batch_size": 2048,
+    "fusion": "min(0.8,0.4+0.1*unique_strong_effect_count), geometric point blend",
+    "target_empirical_exclusion_proven": false,
+    "empirical_target_overlap": "unknown",
+    "label_based_target_matching_performed": false,
+    "source_selection": "exactly the first paired receipt's 277 quote-bounded inputs",
+    "model_training_or_hyperparameter_tuning": false
+  },
+  "limitations": [
+    "Controlled perfect transcription of already consumed prebid prefixes; not real OCR or a blind test.",
+    "This compares the released OCR assistant's reconstructed fusion; historical packet bidder fusion is a different route.",
+    "Private raw IDs and public HMAC IDs are not joinable; target exclusion from the public empirical pool is unproven.",
+    "No label-based target matching or removal was performed; overlap and in-sample optimism remain unknown.",
+    "A and B share exactly one v2 result for each snapshot. C changes only empirical quality filtering.",
+    "Pure-generative rejection cache is shared because it is independent of empirical-table membership.",
+    "Original event-count fusion is reproduced without the newer convergence gate; low support still receives legacy weight.",
+    "Only point fusion is evaluated. Interval calibration, bidding returns and actual live recognition are not qualified.",
+    "Measured timings share a generative rejection cache and reuse frozen v6 points; they are not independent end-to-end latency benchmarks."
+  ],
+  "cohort": {
+    "session_count": 74,
+    "decision_count": 277,
+    "failed_decision_count": 0,
+    "original_quoted_primary_receipts_and_feature_plane_hashes_matched": 277
+  },
+  "private_receipt_sha256": "697d1ea62dbbf9e49e6c0561447a3fec4ecbc27c911a592158889ce5fe4523ac",
+  "artifact_sha256": {
+    "first_v6_adapter_receipt": "ef5a2e2ae73b885bfa84f5b1cf6417b9d8121f2ffe91f9c55fa421efe09b7b05",
+    "frozen_v6_model": "32906137471bb9987cebbd616c502cfce4b419c01ce6a3981de961c4b549e450",
+    "frozen_world_v2_model": "615b219748c1d9920bd3614ee7b83e733eb42c34914c203e90d9553fd6af227c",
+    "public_catalog_and_empirical_rows": "ef4df90dcae2d1778c3f2f4ca32103b6262e453a5fa09a66606558439555edac",
+    "public_empirical_review_metadata": "6d1b2f6346335a8e688718d6c3e2cf58941045b65f6afcb5469ebd51416d163c",
+    "public_static_codebook_source": "c7cd0d639f867a02e0229e773f174087c7c7f3b437e70a8462cba0144c3a0342",
+    "private_consumed_allowlist": "6dcc828a1919313326b59da0be6f7bae25dd8ea8bacfa0e98846ff04e12e2b8a"
+  },
+  "runtime_source_sha256": {
+    "apps/ephemeral-assistant/src/auction_moment_assistant/__init__.py": "1ac0e20078ba96591d3fddfeb889b25e231e28a8d3de300925c7c10e1386ee98",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/capture.py": "c1a13c5c35a1639efaed85b5dc51d9564ebd48b6be954dff079d291d96021b59",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/cli.py": "93664b8e23ab4f98d7990592e2a49ad42804ba43b140db18e39fcdd2384b8d71",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_constraints.py": "d32824ceca96456416892a1c6e73c8ea915025a353821f7ad7a53bb4e45329e4",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_count_moves.py": "952250eeafae8051e535d718c315297648ad32b825f850e3ea12d449d4f12602",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_sampler.py": "cf25755715933aac8551a2c5b9c7e7e55ad831f4fad956a51cb5e2b391eca510",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/latest_model.py": "0bb05f3b9bda010356f3e26786859c7cbe1b8f20b04745b87d6a4b6924684035",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/map_editor.py": "ab8a9502894f5729870c810033932f4542dda4e94c8feed270751a08b92b79a4",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/models.py": "4ac14971bc2a9c37e3053dbb8249ac7730ef40c45c3d3976c4dd5607b0752055",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/observations.py": "51aff024530a453763585b45d41bb6d835a07ff2633fc4ce9292a98e1626906e",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/ocr.py": "e8c8d504185d8b55b89bcf886791ec088f2c71b36d13a846913d70071353deea",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/predictor.py": "7db8a68117b45c7c88625f09f0d0e10a70b7b726a4d0f447fd5bd30d3aa1db59",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/presentation.py": "d46d8303445142696aac2ea10da4d9d63e9cdb950a8f9cb84f23845b471a6be3",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/prior_quality.py": "ae94f3413d5b236846977ef0c80660aa248919f54dd8e50c562f2e4aeddc40d7",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/reveal_likelihood.py": "570bcb63386dd8b998d100bf45900fd8e49691d214879eed928ae8e7e7cba46d",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/runtime.py": "335c978c1c04f21b0011c5740820bf6683c650c1ffc26aefca14eb07faccdc7f",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/semantics.py": "b641e0b362021f9b517621e6843f076f031659cc1522436b9fc48fbcb7859b5a",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/state_machine.py": "3ec4796b70e830dd34a5bf6999fcc98c85548d786c4ee87bd00af3d3c9dd9447",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/ui.py": "d2bea6e25c169a75498fc93471094422ac1820348f9c08d4c78f002667cc8ebd",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/vision.py": "813e45e8e8d272f785adacf097220fc6173a0910b7745c71b2a65a7f5c99f7ee",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/world_layout.py": "59cb94490acd009fe20a735230b8cc501f84162798353837f2e6e2988e5527a0",
+    "apps/ephemeral-assistant/src/generative_world_model_v2.py": "21b61c7ff53f7c493307a68f155b0ef1804133fbd9d8588a83ab9eacbaca5af6",
+    "apps/ephemeral-assistant/src/protocol_additive_value_model.py": "2f820f28c9382c05a7c373ed01b6c5d525ff2e9f6f315fb5b7996c9a0673e6b2",
+    "apps/ephemeral-assistant/src/protocol_analog_value_model.py": "5040c50b24afb5eafba823badb105b46c870dfe11e50b8639bbbc198039029be",
+    "apps/ephemeral-assistant/src/protocol_packet_residual_features.py": "abe6b6e3a3095ae6d7d9a866c3995dc3216d743664035b1aeee627aa218f7200",
+    "apps/ephemeral-assistant/src/protocol_position_quality_augment_model.py": "5808e92230c47b20a10896791bcb2ab19ddc4495654a55c73e624593e28a992b",
+    "apps/ephemeral-assistant/src/protocol_purple_area_augment_model.py": "8f8d4f1d8ba04739ae53ad615ecc5f5fa16d294137cff0db416f3e469f91dc1a",
+    "apps/ephemeral-assistant/src/protocol_repeated_quality_sampling.py": "e6990649b8a5a9afd629359992b8f137b1db4920fcae5a8075eb0b96c3176427",
+    "apps/ephemeral-assistant/src/protocol_round_residual_model.py": "f5d05ef2145fe9274aac0e4121d9b584cecff11d7c37247db8016faca1e22ae4",
+    "apps/ephemeral-assistant/src/structural_value_features.py": "d2f6fc113b8f327b9a033c1486db2dbe3f58067310e6781ffb42ec006a21f82e",
+    "apps/ephemeral-assistant/src/train_supervised_value_model.py": "0d10df40f8d8bf7b4a0c3cb6a123891a53b449a2e7e3610bf036f34e153674a1",
+    "private_reconstruction_script_sha256": "d1c1b0ece72f2181875c499958ff1b1cab1b41dbb2e3e1c98b2d71976062a5b2",
+    "private_full_fusion_script_sha256": "30a23a0de4479eb91797d62b8f214973832d685a66d57265f7de2bf58cf2469d"
+  },
+  "sources_and_artifacts_unchanged_during_run": true,
+  "empirical_prior": {
+    "unsafe": {
+      "rule": "legacy_unfiltered_for_reproduction",
+      "input_worlds": 1794,
+      "accepted_worlds": 1794,
+      "excluded_worlds": 0,
+      "verified_worlds": 1284,
+      "metadata_available": true,
+      "exclusion_reason_counts_nonexclusive": {},
+      "used_in_conditional_target": false
+    },
+    "clean": {
+      "rule": "public-s-empirical-prior-reconciliation-v1",
+      "input_worlds": 1794,
+      "accepted_worlds": 1284,
+      "excluded_worlds": 510,
+      "verified_worlds": 1284,
+      "metadata_available": true,
+      "exclusion_reason_counts_nonexclusive": {
+        "value_gate_not_matched": 305,
+        "review_not_confirmed": 305,
+        "catalog_sum_not_settlement": 302,
+        "review_or_independence_flag_not_confirmed": 305,
+        "protocol_settlement_not_confirmed": 247
+      },
+      "used_in_conditional_target": false
+    }
+  },
+  "population_hashes": {
+    "unsafe_world_bank": "84fa0dc3e5a161ced15eda54c6ae99666fa8501ebce1be7900d398e8fcc8b4a7",
+    "clean_world_bank": "45367380a81fdcf3b4dce05114f4d5fe6e8bdd94cd4ee9215c8b949e0f7469ed",
+    "shared_generative_bank": "ce735d85338c4cad9ccb2f2ce5eb56aa7ae42f3c969285c3e83acbd0a1300cf3"
+  },
+  "overall": {
+    "A_legacy_adapter_unsafe_prior": {
+      "case_count": 277,
+      "mape_percent": 25.58275778708653,
+      "wape_percent": 19.85367816906362,
+      "mae_currency_units": 819551.0397111913,
+      "bias_currency_units": 233773.3429602888,
+      "bias_percent_of_total_actual": 5.66317470267048,
+      "v6_fallback_count": 168,
+      "v6_fallback_rate": 0.6064981949458483
+    },
+    "B_fixed_adapter_same_unsafe_prior": {
+      "case_count": 277,
+      "mape_percent": 24.24773681958163,
+      "wape_percent": 18.986028039163788,
+      "mae_currency_units": 783734.8267148015,
+      "bias_currency_units": 236746.4584837545,
+      "bias_percent_of_total_actual": 5.73519862296608,
+      "v6_fallback_count": 168,
+      "v6_fallback_rate": 0.6064981949458483
+    },
+    "C_fixed_adapter_clean_prior": {
+      "case_count": 277,
+      "mape_percent": 24.077201515712055,
+      "wape_percent": 18.882114224267173,
+      "mae_currency_units": 779445.3104693141,
+      "bias_currency_units": 236624.74007220217,
+      "bias_percent_of_total_actual": 5.732249986391766,
+      "v6_fallback_count": 168,
+      "v6_fallback_rate": 0.6064981949458483
+    }
+  },
+  "session_equal_weighted": {
+    "A_legacy_adapter_unsafe_prior": {
+      "session_count": 74,
+      "session_equal_weight_mape_percent": 25.418971237418628,
+      "session_equal_weight_wape_percent": 25.418971237418624,
+      "session_equal_weight_mae_currency_units": 772344.4650900901,
+      "session_equal_weight_bias_currency_units": 190302.09527027028,
+      "final_available_quote_per_session": {
+        "case_count": 74,
+        "mape_percent": 22.83197409467973,
+        "wape_percent": 17.482976888551462,
+        "mae_currency_units": 694415.9864864865,
+        "bias_currency_units": 186570.95945945947,
+        "bias_percent_of_total_actual": 4.697207201130698,
+        "v6_fallback_count": 55,
+        "v6_fallback_rate": 0.7432432432432432
+      }
+    },
+    "B_fixed_adapter_same_unsafe_prior": {
+      "session_count": 74,
+      "session_equal_weight_mape_percent": 24.04333918129425,
+      "session_equal_weight_wape_percent": 24.04333918129425,
+      "session_equal_weight_mae_currency_units": 739092.1975225225,
+      "session_equal_weight_bias_currency_units": 192372.0695945946,
+      "final_available_quote_per_session": {
+        "case_count": 74,
+        "mape_percent": 21.582104258933928,
+        "wape_percent": 16.78318705294137,
+        "mae_currency_units": 666620.6486486486,
+        "bias_currency_units": 184336.86486486485,
+        "bias_percent_of_total_actual": 4.640960477374008,
+        "v6_fallback_count": 55,
+        "v6_fallback_rate": 0.7432432432432432
+      }
+    },
+    "C_fixed_adapter_clean_prior": {
+      "session_count": 74,
+      "session_equal_weight_mape_percent": 23.88393223717215,
+      "session_equal_weight_wape_percent": 23.88393223717215,
+      "session_equal_weight_mae_currency_units": 733894.2745495496,
+      "session_equal_weight_bias_currency_units": 196174.59797297296,
+      "final_available_quote_per_session": {
+        "case_count": 74,
+        "mape_percent": 21.588701374089528,
+        "wape_percent": 16.736761893161912,
+        "mae_currency_units": 664776.6621621621,
+        "bias_currency_units": 191289.66216216216,
+        "bias_percent_of_total_actual": 4.816007706736428,
+        "v6_fallback_count": 55,
+        "v6_fallback_rate": 0.7432432432432432
+      }
+    }
+  },
+  "by_round": {
+    "1": {
+      "A_legacy_adapter_unsafe_prior": {
+        "case_count": 74,
+        "mape_percent": 26.41474874961252,
+        "wape_percent": 20.449687322100466,
+        "mae_currency_units": 812252.3918918918,
+        "bias_currency_units": 160045.9054054054,
+        "bias_percent_of_total_actual": 4.0293986886266016,
+        "v6_fallback_count": 15,
+        "v6_fallback_rate": 0.20270270270270271
+      },
+      "B_fixed_adapter_same_unsafe_prior": {
+        "case_count": 74,
+        "mape_percent": 24.980790778190283,
+        "wape_percent": 19.510746078055544,
+        "mae_currency_units": 774958.0675675676,
+        "bias_currency_units": 167367.12162162163,
+        "bias_percent_of_total_actual": 4.213721423694693,
+        "v6_fallback_count": 15,
+        "v6_fallback_rate": 0.20270270270270271
+      },
+      "C_fixed_adapter_clean_prior": {
+        "case_count": 74,
+        "mape_percent": 24.669093483276477,
+        "wape_percent": 19.252462897169146,
+        "mae_currency_units": 764699.1756756756,
+        "bias_currency_units": 165149.98648648648,
+        "bias_percent_of_total_actual": 4.15790168008181,
+        "v6_fallback_count": 15,
+        "v6_fallback_rate": 0.20270270270270271
+      }
+    },
+    "2": {
+      "A_legacy_adapter_unsafe_prior": {
+        "case_count": 67,
+        "mape_percent": 27.069733322742707,
+        "wape_percent": 21.01395812552895,
+        "mae_currency_units": 863281.1194029851,
+        "bias_currency_units": 199714.40298507462,
+        "bias_percent_of_total_actual": 4.861440852888947,
+        "v6_fallback_count": 38,
+        "v6_fallback_rate": 0.5671641791044776
+      },
+      "B_fixed_adapter_same_unsafe_prior": {
+        "case_count": 67,
+        "mape_percent": 25.930724124639802,
+        "wape_percent": 20.055924536539354,
+        "mae_currency_units": 823923.8358208955,
+        "bias_currency_units": 209819.38805970148,
+        "bias_percent_of_total_actual": 5.107416038080249,
+        "v6_fallback_count": 38,
+        "v6_fallback_rate": 0.5671641791044776
+      },
+      "C_fixed_adapter_clean_prior": {
+        "case_count": 67,
+        "mape_percent": 25.537980861897434,
+        "wape_percent": 19.87357561270595,
+        "mae_currency_units": 816432.7014925373,
+        "bias_currency_units": 212127.8656716418,
+        "bias_percent_of_total_actual": 5.163608917526729,
+        "v6_fallback_count": 38,
+        "v6_fallback_rate": 0.5671641791044776
+      }
+    },
+    "3": {
+      "A_legacy_adapter_unsafe_prior": {
+        "case_count": 63,
+        "mape_percent": 24.466913678477074,
+        "wape_percent": 19.296263921583577,
+        "mae_currency_units": 796937.2222222222,
+        "bias_currency_units": 231997.31746031746,
+        "bias_percent_of_total_actual": 5.6173577315546614,
+        "v6_fallback_count": 47,
+        "v6_fallback_rate": 0.746031746031746
+      },
+      "B_fixed_adapter_same_unsafe_prior": {
+        "case_count": 63,
+        "mape_percent": 23.31914651446766,
+        "wape_percent": 18.586875599841758,
+        "mae_currency_units": 767639.4285714285,
+        "bias_currency_units": 235139.2380952381,
+        "bias_percent_of_total_actual": 5.693433146407342,
+        "v6_fallback_count": 47,
+        "v6_fallback_rate": 0.746031746031746
+      },
+      "C_fixed_adapter_clean_prior": {
+        "case_count": 63,
+        "mape_percent": 23.35313253439605,
+        "wape_percent": 18.614881234497968,
+        "mae_currency_units": 768796.0634920635,
+        "bias_currency_units": 234753.26984126985,
+        "bias_percent_of_total_actual": 5.684087685954188,
+        "v6_fallback_count": 47,
+        "v6_fallback_rate": 0.746031746031746
+      }
+    },
+    "4": {
+      "A_legacy_adapter_unsafe_prior": {
+        "case_count": 48,
+        "mape_percent": 25.667441440452848,
+        "wape_percent": 19.714478087439137,
+        "mae_currency_units": 821173.0208333334,
+        "bias_currency_units": 329554.5208333333,
+        "bias_percent_of_total_actual": 7.9118470952589846,
+        "v6_fallback_count": 43,
+        "v6_fallback_rate": 0.8958333333333334
+      },
+      "B_fixed_adapter_same_unsafe_prior": {
+        "case_count": 48,
+        "mape_percent": 24.029612363395632,
+        "wape_percent": 18.726964233744038,
+        "mae_currency_units": 780039.8125,
+        "bias_currency_units": 332366.4791666667,
+        "bias_percent_of_total_actual": 7.979355756087898,
+        "v6_fallback_count": 43,
+        "v6_fallback_rate": 0.8958333333333334
+      },
+      "C_fixed_adapter_clean_prior": {
+        "case_count": 48,
+        "mape_percent": 24.029612363395632,
+        "wape_percent": 18.726964233744038,
+        "mae_currency_units": 780039.8125,
+        "bias_currency_units": 332366.4791666667,
+        "bias_percent_of_total_actual": 7.979355756087898,
+        "v6_fallback_count": 43,
+        "v6_fallback_rate": 0.8958333333333334
+      }
+    },
+    "5": {
+      "A_legacy_adapter_unsafe_prior": {
+        "case_count": 25,
+        "mape_percent": 21.78430464168353,
+        "wape_percent": 17.035598143464604,
+        "mae_currency_units": 777831.04,
+        "bias_currency_units": 363860.24,
+        "bias_percent_of_total_actual": 7.969053059420958,
+        "v6_fallback_count": 25,
+        "v6_fallback_rate": 1.0
+      },
+      "B_fixed_adapter_same_unsafe_prior": {
+        "case_count": 25,
+        "mape_percent": 20.32633764930843,
+        "wape_percent": 16.418663398695646,
+        "mae_currency_units": 749662.32,
+        "bias_currency_units": 334733.6,
+        "bias_percent_of_total_actual": 7.331138513982707,
+        "v6_fallback_count": 25,
+        "v6_fallback_rate": 1.0
+      },
+      "C_fixed_adapter_clean_prior": {
+        "case_count": 25,
+        "mape_percent": 20.32633764930843,
+        "wape_percent": 16.418663398695646,
+        "mae_currency_units": 749662.32,
+        "bias_currency_units": 334733.6,
+        "bias_percent_of_total_actual": 7.331138513982707,
+        "v6_fallback_count": 25,
+        "v6_fallback_rate": 1.0
+      }
+    }
+  },
+  "paired_comparisons": {
+    "B_minus_A_adapter_ablation": {
+      "changed_prediction_count": 41,
+      "improved_absolute_error_count": 33,
+      "worsened_absolute_error_count": 8,
+      "unchanged_absolute_error_count": 236
+    },
+    "C_minus_B_prior_audit_ablation": {
+      "changed_prediction_count": 49,
+      "improved_absolute_error_count": 31,
+      "worsened_absolute_error_count": 18,
+      "unchanged_absolute_error_count": 228
+    },
+    "C_minus_A_combined": {
+      "changed_prediction_count": 87,
+      "improved_absolute_error_count": 62,
+      "worsened_absolute_error_count": 25,
+      "unchanged_absolute_error_count": 190
+    }
+  },
+  "duration_seconds": 587.4220000000023,
+  "amortized_world_prediction_timing_seconds": {
+    "unsafe_v2_seconds": {
+      "mean": 2.097184115523512,
+      "p50": 2.610000000000582,
+      "p90": 3.5469999999986612,
+      "maximum": 6.937000000001717
+    },
+    "clean_v2_seconds": {
+      "mean": 0.011039711191247062,
+      "p50": 0.014999999999417923,
+      "p90": 0.01599999999962165,
+      "maximum": 0.06300000000192085
+    }
+  }
+}

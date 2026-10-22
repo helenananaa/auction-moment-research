@@ -38,6 +38,9 @@ class MapObservation:
     human_locked: bool = False
     identity_candidates: tuple[tuple[str, float], ...] = ()
     first_seen_round: int | None = None
+    # Round in which a quality was first seen on this anchor; kept when a
+    # later observation lacks the quality, so reveals can be dated.
+    quality_first_round: int | None = None
 
     @property
     def key(self) -> tuple[int, int]:
@@ -58,6 +61,21 @@ class ObservationSnapshot:
     map_rows_source: str
     pre_bid_confirmed: bool
     pre_bid_source: str
+
+
+def _quality_first_round(
+    observed: MapObservation, previous: MapObservation | None, round_number: int
+) -> int | None:
+    rounds = []
+    if previous is not None and previous.quality_first_round is not None:
+        rounds.append(int(previous.quality_first_round))
+    if observed.quality is not None:
+        rounds.append(
+            int(observed.quality_first_round)
+            if observed.quality_first_round is not None
+            else int(round_number)
+        )
+    return min(rounds) if rounds else None
 
 
 class ObservationStore:
@@ -150,6 +168,9 @@ class ObservationStore:
                         int(previous.first_seen_round),
                         int(observed.first_seen_round),
                     )
+                observed.quality_first_round = _quality_first_round(
+                    observed, previous, self._round_number
+                )
                 if previous is None or float(observed.confidence) >= float(
                     previous.confidence
                 ):
@@ -197,6 +218,9 @@ class ObservationStore:
                     and previous.first_seen_round is not None
                     else self._round_number
                 )
+            corrected.quality_first_round = _quality_first_round(
+                corrected, previous, self._round_number
+            )
             self._suppressed_map_keys.discard(corrected.key)
             self._map_items[corrected.key] = corrected
             return self._changed()
@@ -302,6 +326,55 @@ class ObservationStore:
                 pre_bid_source=self._pre_bid_rounds.get(
                     self._round_number, "missing"
                 ),
+            )
+
+    def preview_snapshot(
+        self, round_number: int, events: Iterable[EventObservation]
+    ) -> ObservationSnapshot:
+        """The snapshot a capture of these events would give, without applying it.
+
+        Used to start inference before the round's map scan ends: the map,
+        its completeness and its extent are those of the previous scan, and
+        human-locked events still win over new OCR.
+        """
+        value = max(1, min(5, int(round_number)))
+        with self._lock:
+            merged = dict(self._events)
+            for event in events:
+                key = (int(event.round_number), str(event.kind))
+                previous = merged.get(key)
+                if previous is not None and previous.human_locked:
+                    continue
+                merged[key] = copy.deepcopy(event)
+            previous_round = value - 1
+            map_rows, map_height_exact, map_rows_source = (
+                self._map_extent_by_round.get(previous_round, (None, False, "missing"))
+            )
+            return ObservationSnapshot(
+                revision=self._revision,
+                round_number=value,
+                bankroll=self._bankroll,
+                events=tuple(
+                    asdict(event)
+                    for key, event in sorted(merged.items())
+                    if key[0] <= value
+                ),
+                map_items=tuple(
+                    asdict(item) for _, item in sorted(self._map_items.items())
+                ),
+                completeness_confirmed=(
+                    previous_round == 0 or previous_round in self._complete_rounds
+                ),
+                completeness_source=(
+                    "no_earlier_scan"
+                    if previous_round == 0
+                    else self._complete_rounds.get(previous_round, "missing")
+                ),
+                map_rows=map_rows,
+                map_height_exact=map_height_exact,
+                map_rows_source=map_rows_source,
+                pre_bid_confirmed=False,
+                pre_bid_source="preview_before_scan",
             )
 
     def _zero_frame(self) -> None:

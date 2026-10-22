@@ -6,6 +6,7 @@ from queue import Empty, Queue
 import threading
 import time
 import traceback
+from typing import Callable
 
 import cv2
 import numpy as np
@@ -80,11 +81,15 @@ class CapturePipeline:
         scroll_wait: float = 0.20,
         max_scroll_pages: int = 12,
         same_threshold: float = 1.20,
+        on_round_events: Callable[[int, OcrCapture], None] | None = None,
     ) -> None:
         self.source = source
         self.store = store
         self.ocr = ocr
         self.vision = vision
+        # Called with the round's events as soon as the map top is captured,
+        # before scrolling; the store is still updated only at the end.
+        self.on_round_events = on_round_events
         self.scroll_wait = max(0.05, float(scroll_wait))
         self.max_scroll_pages = max(1, int(max_scroll_pages))
         self.same_threshold = max(0.0, float(same_threshold))
@@ -138,6 +143,23 @@ class CapturePipeline:
             tuple(debug),
         )
 
+    def _recognize_events(
+        self,
+        frame: np.ndarray,
+        round_number: int,
+        errors: list[str],
+        debug: list[str],
+    ) -> OcrCapture | None:
+        try:
+            capture = self.ocr.recognize(frame, expected_round=round_number)
+        except Exception as exc:
+            errors.append(f"OCR: {exc}")
+            debug.append("Round OCR failed\n" + traceback.format_exc())
+            return None
+        if not capture.round_verified:
+            errors.append("轮次标题 OCR 未通过阈值，已按状态机轮次暂存")
+        return capture
+
     def _round_frame(self) -> np.ndarray:
         frame = self.source.capture()
         observed = classify_state(extract_features(frame))
@@ -169,6 +191,8 @@ class CapturePipeline:
         restored_top = False
         performed_swipe = False
         current: np.ndarray | None = None
+        ocr_capture = None
+        ocr_done = False
         try:
             current = self._round_frame()
             fingerprint = _map_fingerprint(current)
@@ -189,6 +213,16 @@ class CapturePipeline:
                 raise CaptureError("达到滚动上限但未确认地图顶部")
 
             frames.append(current.copy())
+            if self.on_round_events is not None and self.ocr is not None:
+                # Same frame and OCR as below, just earlier, so inference can
+                # start while the map is scrolled.
+                ocr_done = True
+                ocr_capture = self._recognize_events(frames[0], round_number, errors, debug)
+                if ocr_capture is not None:
+                    try:
+                        self.on_round_events(round_number, ocr_capture)
+                    except Exception:
+                        debug.append("Early inference start failed\n" + traceback.format_exc())
             for _ in range(self.max_scroll_pages):
                 self._swipe((340, 560), (340, 320), 650)
                 performed_swipe = True
@@ -236,21 +270,12 @@ class CapturePipeline:
                     errors.append(f"恢复地图顶部失败：{exc}")
                     debug.append("Map top restore failed\n" + traceback.format_exc())
 
-        ocr_capture = None
         map_items = ()
         estimated_rows = None
         alignment_stable = False
         if frames:
-            if self.ocr is not None:
-                try:
-                    ocr_capture = self.ocr.recognize(
-                        frames[0], expected_round=round_number
-                    )
-                    if not ocr_capture.round_verified:
-                        errors.append("轮次标题 OCR 未通过阈值，已按状态机轮次暂存")
-                except Exception as exc:
-                    errors.append(f"OCR: {exc}")
-                    debug.append("Round OCR failed\n" + traceback.format_exc())
+            if self.ocr is not None and not ocr_done:
+                ocr_capture = self._recognize_events(frames[0], round_number, errors, debug)
             if self.vision is not None:
                 try:
                     recognition = self.vision.recognize_viewports(frames)
@@ -507,9 +532,40 @@ class InferenceCoordinator:
         snapshot = store.snapshot()
         return self._executor.submit(self.predictor.predict, snapshot)
 
+    def prewarm(self, store: ObservationStore, round_number: int, capture: OcrCapture) -> bool:
+        """Let a predictor that supports it start on the round's events early."""
+        prewarm = getattr(self.predictor, "prewarm", None)
+        if not callable(prewarm):
+            return False
+        return bool(prewarm(store.preview_snapshot(round_number, capture.events)))
+
+    def refine(self, store: ObservationStore, result: PredictionResult) -> bool:
+        """Keep refining a current estimate that ran out of time, if the predictor can."""
+        refine = getattr(self.predictor, "refine", None)
+        if (
+            not callable(refine)
+            or result.status != "exact_v2_posterior_low_ess"
+            or not self.current(store, result)
+        ):
+            return False
+        return bool(refine(int(result.revision)))
+
+    def refined(self, store: ObservationStore) -> tuple[str, PredictionResult | None]:
+        """Never blocks: ("running", None), ("done", result or None) or ("gone", None)."""
+        poll = getattr(self.predictor, "poll_refined", None)
+        if not callable(poll):
+            return "gone", None
+        state, result = poll()
+        if result is not None and not self.current(store, result):
+            return "gone", None
+        return state, result
+
     @staticmethod
     def current(store: ObservationStore, result: PredictionResult) -> bool:
         return int(result.revision) == int(store.revision)
 
     def close(self) -> None:
         self._executor.shutdown(wait=False, cancel_futures=True)
+        close = getattr(self.predictor, "close", None)
+        if callable(close):
+            close()

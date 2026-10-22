@@ -1,0 +1,117 @@
+{
+  "schema_version": "public-prior-metadata-hardening-verification-v1",
+  "created_at_utc": "2026-10-19T06:02:08.811548+00:00",
+  "scope": "Post-benchmark missing-metadata hardening; public data and aggregate receipts only.",
+  "change": {
+    "metadata_missing_and_quality_filter_true": "exclude_world_with_review_metadata_unavailable",
+    "quality_filter_false": "explicit_legacy_reproduction_preserved",
+    "existing_metadata_present_branch_changed": false
+  },
+  "provenance_sha256": {
+    "apps/ephemeral-assistant/src/auction_moment_assistant/prior_quality.py": "4c2a07b4f573151db1f1adb2df29a469e2f876326bba2e79c30d3f0e634b2852",
+    "apps/ephemeral-assistant/tests/test_prior_quality.py": "c50efac783925e418bb353a31238f81e3a4aca4f5ba4dac01102bda4fa30eca6",
+    "data/v1/core/treasures.csv": "ef4df90dcae2d1778c3f2f4ca32103b6262e453a5fa09a66606558439555edac",
+    "data/v1/core/sessions.csv": "6d1b2f6346335a8e688718d6c3e2cf58941045b65f6afcb5469ebd51416d163c",
+    "models/latest-model-v6-v2.0.0-beta.1/world-model-v2-S.json": "615b219748c1d9920bd3614ee7b83e733eb42c34914c203e90d9553fd6af227c",
+    "results/ocr-reveal-adapter-consumed74-full-fusion-ABC-aggregate-20261019.json": "e602c02fa8805b03b42f05ef89181a6e044326c0c3093b89660b8bafe03f6dcb",
+    "results/public-world-quality-audit-20261019.json": "9e3d15dc053eb2232211e4acc82a4e8dc667e66c2f7dc7526877e0096d6ca8a7"
+  },
+  "prepatch_source": {
+    "reconstruction": "In memory, reverse only the missing-metadata else branch; no historical receipt or runtime file replaced.",
+    "sha256": "ae94f3413d5b236846977ef0c80660aa248919f54dd8e50c562f2e4aeddc40d7",
+    "matches_original_ABC_runtime_source_sha256": true
+  },
+  "public_population": {
+    "rule": "public-s-empirical-prior-reconciliation-v1",
+    "input_worlds": 1794,
+    "accepted_worlds": 1284,
+    "excluded_worlds": 510,
+    "verified_worlds": 1284,
+    "metadata_available": true,
+    "exclusion_reason_counts_nonexclusive": {
+      "review_or_independence_flag_not_confirmed": 305,
+      "review_not_confirmed": 305,
+      "catalog_sum_not_settlement": 302,
+      "value_gate_not_matched": 305,
+      "protocol_settlement_not_confirmed": 247
+    },
+    "used_in_conditional_target": false
+  },
+  "matrix_verification": {
+    "old_and_current_loader_counts_elementwise_equal": true,
+    "old_and_current_loader_diagnostics_equal": true,
+    "current_and_independent_audit_counts_elementwise_equal": true,
+    "current_empirical_counts": {
+      "shape": [
+        1284,
+        120
+      ],
+      "dtype": "int16",
+      "content_sha256": "da5275897a898051dabe7695a840e0d0de951336eb0b36a78b6760a94ee92321",
+      "canonical_array_sha256": "cbd73aacb345968950c24a12f032dcbed53305ffbd0c6ed57f228776da19588a"
+    },
+    "prepatch_empirical_counts": {
+      "shape": [
+        1284,
+        120
+      ],
+      "dtype": "int16",
+      "content_sha256": "da5275897a898051dabe7695a840e0d0de951336eb0b36a78b6760a94ee92321",
+      "canonical_array_sha256": "cbd73aacb345968950c24a12f032dcbed53305ffbd0c6ed57f228776da19588a"
+    },
+    "independent_audit_empirical_counts": {
+      "shape": [
+        1284,
+        120
+      ],
+      "dtype": "int16",
+      "content_sha256": "da5275897a898051dabe7695a840e0d0de951336eb0b36a78b6760a94ee92321",
+      "canonical_array_sha256": "cbd73aacb345968950c24a12f032dcbed53305ffbd0c6ed57f228776da19588a"
+    },
+    "clean_combined_bank": {
+      "shape": [
+        5380,
+        120
+      ],
+      "dtype": "int16",
+      "content_sha256": "c89aa64a551958b8cf65915e2fadd796e22896d0c6e636aea38988c23350bc74",
+      "canonical_array_sha256": "45367380a81fdcf3b4dce05114f4d5fe6e8bdd94cd4ee9215c8b949e0f7469ed"
+    },
+    "shared_generative_bank": {
+      "shape": [
+        4096,
+        120
+      ],
+      "dtype": "int16",
+      "content_sha256": "bde777a6297b27b071c71ce59d07740e4368adabbdc63b6bd73a4e2a0f67d4bd",
+      "canonical_array_sha256": "ce735d85338c4cad9ccb2f2ce5eb56aa7ae42f3c969285c3e83acbd0a1300cf3"
+    },
+    "ABC_clean_world_bank_sha256": "45367380a81fdcf3b4dce05114f4d5fe6e8bdd94cd4ee9215c8b949e0f7469ed",
+    "ABC_shared_generative_bank_sha256": "ce735d85338c4cad9ccb2f2ce5eb56aa7ae42f3c969285c3e83acbd0a1300cf3",
+    "combined_and_generative_bank_hashes_match_ABC": true
+  },
+  "bank_reconstruction": {
+    "prior_samples": 4096,
+    "prior_rng": "random.Random(20260804)",
+    "concatenation": "clean empirical counts followed by frozen-model generated counts",
+    "dtype": "int16",
+    "array_hash": "sha256(UTF-8 canonical JSON {shape,dtype,content_sha256}), content_sha256=sha256(array.tobytes()), sort_keys=True,separators=(comma,colon),ensure_ascii=False"
+  },
+  "validation": {
+    "focused_test_file": "apps/ephemeral-assistant/tests/test_prior_quality.py",
+    "focused_tests_passed": 14,
+    "ruff_passed": true,
+    "covers_missing_metadata_with_matching_label": true,
+    "covers_missing_metadata_without_label": true,
+    "covers_explicit_legacy_opt_out": true
+  },
+  "boundaries": {
+    "prediction_rerun": false,
+    "model_training_or_artifact_change": false,
+    "original_audit_or_ABC_receipt_overwritten": false,
+    "current_source_is_newer_than_ABC_run": true,
+    "public_bank_used_by_277_decision_ABC_run_semantically_unchanged": true,
+    "new_accuracy_claim": false,
+    "source_and_model_unchanged_during_this_verification": true
+  }
+}

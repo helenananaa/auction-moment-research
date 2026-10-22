@@ -12,12 +12,21 @@ ISSUE_LABELS = {
     "visible_map_auto_scanned_not_human_reviewed": "地图由自动扫描生成，尚未人工复核",
     "no_compatible_public_world": "当前事件与地图条件组合没有兼容世界",
     "v2_conflict_using_v6_fallback": "v2 条件冲突，已改用 v6 保守回退",
+    "v2_unreliable_posterior_using_v6_fallback": "v2 推断支持不足，已回退到 v6",
+    "posterior_not_converged": "条件采样尚未收敛",
+    "numeric_constraints_infeasible": "当前数值条件在生成模型支持范围内无解",
+    "unsupported_evidence": "存在当前推断暂不支持的证据",
     "ocr_adapter_not_packet_equivalent": "OCR 证据不等价于结构化协议输入",
     "interval_uncalibrated": "当前区间尚未校准",
     "missing_event": "存在尚未识别的轮次事件",
     "map_completeness_not_confirmed": "地图完整性尚未确认",
     "compatible_worlds_below_10": "兼容世界少于 10 个",
     "conditioned_resample_provisional": "v2 已按当前条件重新生成候选世界，结果仍属未校准估计",
+    "exact_posterior_low_ess": "精确条件后验有效样本不足或计算被时间预算截断",
+    "exact_unavailable_using_v6_fallback": "精确条件采样不可用，已回退到 v6",
+    "exact_unsupported_evidence": "存在精确条件采样暂不支持或相互冲突的证据",
+    "exact_sampling_failed": "精确条件采样运行失败",
+    "exact_no_posterior_support": "精确条件采样在当前条件下没有支持",
 }
 
 EFFECT_LABELS = {
@@ -86,10 +95,7 @@ def describe_diagnostic(value: str) -> str:
     if parts[:2] == ["map_conflict", "size"] and len(parts) == 4:
         return f"要求 {parts[2]} 尺寸至少 {parts[3]} 件后兼容世界归零"
     if parts[:2] == ["map_conflict", "quality_size"] and len(parts) == 5:
-        return (
-            f"要求{parts[2]}品质且 {parts[3]} 尺寸至少 {parts[4]} 件后"
-            "兼容世界归零"
-        )
+        return f"要求{parts[2]}品质且 {parts[3]} 尺寸至少 {parts[4]} 件后兼容世界归零"
     if parts[:2] == ["map_conflict", "unknown_identity"] and len(parts) == 3:
         return f"图鉴中不存在自动识别身份 {parts[2]}"
     if parts[:2] == ["map_conflict", "unknown_quality"] and len(parts) == 3:
@@ -101,9 +107,7 @@ def describe_diagnostic(value: str) -> str:
 
 def format_prediction(result: PredictionResult) -> str:
     issues = "；".join(describe_issue(value) for value in result.issues)
-    diagnostics = "；".join(
-        describe_diagnostic(value) for value in result.diagnostics
-    )
+    diagnostics = "；".join(describe_diagnostic(value) for value in result.diagnostics)
     if result.p50 is None:
         lines = [
             f"状态：{result.status}",
@@ -114,9 +118,33 @@ def format_prediction(result: PredictionResult) -> str:
             lines.append(f"冲突定位：{diagnostics}")
         return "\n".join(lines)
 
-    if result.estimate_source == "v6_fallback":
+    if result.estimate_source == "v6_default":
         lines = [
-            "状态：v2 条件冲突，显示 v6 保守回退",
+            "状态：使用 v6 估值；v2 仅供诊断",
+            f"v6 P10 / P50 / P90：{result.p10:,} / {result.p50:,} / {result.p90:,}",
+        ]
+        if result.v2_prediction is not None:
+            lines.append(f"v2 诊断估值（未参与融合）：{result.v2_prediction:,}")
+    elif result.estimate_source == "exact_v2_posterior":
+        lines = [
+            "状态：精确条件后验估值（实验模式）"
+            + ("" if result.status == "exact_v2_posterior_estimate" else "；有效样本不足，谨慎参考"),
+        ]
+        if result.point_estimate is not None:
+            lines.append(f"估值（期望相对误差最小点）：{result.point_estimate:,}")
+        lines.append(f"后验 P10 / P50 / P90：{result.p10:,} / {result.p50:,} / {result.p90:,}")
+        if result.v6_prediction is not None:
+            lines.append(f"v6 对照（未参与）：{result.v6_prediction:,}")
+    elif result.estimate_source == "v6_fallback":
+        heading = (
+            "状态：v2 条件冲突，显示 v6 保守回退"
+            if result.status == "v6_fallback_v2_conditioning_conflict"
+            else "状态：精确条件采样不可用，显示 v6 回退估值"
+            if result.status == "v6_fallback_exact_unavailable"
+            else "状态：v2 推断支持不足，显示 v6 回退估值"
+        )
+        lines = [
+            heading,
             f"v6 P10 / P50 / P90：{result.p10:,} / {result.p50:,} / {result.p90:,}",
         ]
     else:
@@ -146,7 +174,8 @@ def format_prediction(result: PredictionResult) -> str:
             f"对应对手最高报价约 {result.maximum_opponent_bid:,}"
         )
     if diagnostics:
-        lines.append(f"冲突定位：{diagnostics}")
+        label = "v2 诊断" if result.estimate_source == "v6_default" else "冲突定位"
+        lines.append(f"{label}：{diagnostics}")
     if issues:
         lines.append(f"提示：{issues}")
     lines.append("不会自动提交报价；区间未校准，actionable=false")

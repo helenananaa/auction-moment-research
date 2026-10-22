@@ -21,6 +21,8 @@ from auction_moment_assistant.presentation import (
 class BidAdvisoryTests(unittest.TestCase):
     def predictor_with_world(self, world: PredictionResult) -> LatestV6V2Predictor:
         predictor = object.__new__(LatestV6V2Predictor)
+        predictor.conditional_sampling = True
+        predictor.experimental_v2_fusion = False
         predictor.adapter = SimpleNamespace(
             adapt=lambda _snapshot: AdaptedDecision({}, (), (), 0)
         )
@@ -56,6 +58,7 @@ class BidAdvisoryTests(unittest.TestCase):
             actionable=False,
             issues=("no_compatible_public_world",),
             diagnostics=("event_conflict:R2:public:total_item_count:999",),
+            conditional_diagnostics={"numeric_infeasible": True},
         )
         store = ObservationStore()
         store.set_round(2)
@@ -87,12 +90,15 @@ class BidAdvisoryTests(unittest.TestCase):
             maximum=10_000_000,
             actionable=False,
             issues=(),
+            effective_sample_size=256.0,
+            posterior_converged=True,
+            posterior_method="conditional_mcmc",
         )
         store = ObservationStore()
         store.set_round(1)
         result = self.predictor_with_world(world).predict(store.snapshot())
 
-        expected_p10 = _geometric_blend(3_500_000, 4_100_000, 0.40)
+        expected_p10 = _geometric_blend(3_500_000, 4_100_000, 0.30)
         self.assertEqual(result.p10, expected_p10)
         self.assertEqual(result.recommended_bid, math.floor(expected_p10 * 0.90))
         self.assertEqual(result.estimate_source, "v6_v2_blend")

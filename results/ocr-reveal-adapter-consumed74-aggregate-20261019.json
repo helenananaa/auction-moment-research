@@ -1,0 +1,253 @@
+{
+  "schema_version": "ocr-reveal-adapter-consumed74-public-aggregate-v1",
+  "experiment_kind": "retrospective_controlled_perfect_transcription_adapter_comparison",
+  "comparison": {
+    "baseline": "same frozen v6 model, reveal histories cleared and reveal attribution removed",
+    "attributed": "same frozen v6 model, conservatively attributable reveal histories retained",
+    "all_other_prebid_information_identical": true,
+    "historical_packet_v6_v2_full_fusion_evaluated": false,
+    "real_ocr_run": false,
+    "blind_test": false,
+    "training_or_tuning_performed": false
+  },
+  "limitations": [
+    "All games were already consumed historical development evidence.",
+    "Prebid facts are ideal protocol transcriptions, not recognition results from screenshots.",
+    "Results compare old/new OCR adapter inputs to one frozen v6; historical packet v6+v2 fusion metrics are not comparable.",
+    "Quoted primary-prefix provenance was checked for every evaluated decision.",
+    "Later-written map snapshots never supply features for the primary comparison.",
+    "Reported cell coordinates supply position anchors; marker extents do not supply hidden shapes.",
+    "These retrospective improvements do not establish new real-game accuracy or interval calibration."
+  ],
+  "cohort": {
+    "already_consumed_session_count": 74,
+    "planned_decision_count": 277,
+    "evaluated_decision_count": 277,
+    "failed_decision_count": 0,
+    "primary_prefix_receipt_match_count": 277,
+    "manifest_sha256": "6dcc828a1919313326b59da0be6f7bae25dd8ea8bacfa0e98846ff04e12e2b8a",
+    "available_round_maps_after_quote_rejected_as_features": 248,
+    "available_round_maps_compatible_with_quote_cutoff": 29
+  },
+  "provenance_sha256": {
+    "private_paired_receipt": "ef5a2e2ae73b885bfa84f5b1cf6417b9d8121f2ffe91f9c55fa421efe09b7b05",
+    "evaluation_script": "d1c1b0ece72f2181875c499958ff1b1cab1b41dbb2e3e1c98b2d71976062a5b2",
+    "frozen_v6_model": "32906137471bb9987cebbd616c502cfce4b419c01ce6a3981de961c4b549e450",
+    "public_catalog_source": "ef4df90dcae2d1778c3f2f4ca32103b6262e453a5fa09a66606558439555edac",
+    "public_static_event_codebook_source": "c7cd0d639f867a02e0229e773f174087c7c7f3b437e70a8462cba0144c3a0342"
+  },
+  "runtime_source_sha256": {
+    "apps/ephemeral-assistant/src/auction_moment_assistant/__init__.py": "1ac0e20078ba96591d3fddfeb889b25e231e28a8d3de300925c7c10e1386ee98",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/capture.py": "c1a13c5c35a1639efaed85b5dc51d9564ebd48b6be954dff079d291d96021b59",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/cli.py": "e6bf7331b0edee6f4526c74bfdd85a5f0b34c9155a60c2e3baeb98fd8286cbda",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_constraints.py": "d32824ceca96456416892a1c6e73c8ea915025a353821f7ad7a53bb4e45329e4",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_count_moves.py": "952250eeafae8051e535d718c315297648ad32b825f850e3ea12d449d4f12602",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/conditional_sampler.py": "cf25755715933aac8551a2c5b9c7e7e55ad831f4fad956a51cb5e2b391eca510",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/latest_model.py": "49b8075f3feea0f59793070978288d464b57448e07284a032d7e7381eaad05b9",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/map_editor.py": "ab8a9502894f5729870c810033932f4542dda4e94c8feed270751a08b92b79a4",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/models.py": "4ac14971bc2a9c37e3053dbb8249ac7730ef40c45c3d3976c4dd5607b0752055",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/observations.py": "51aff024530a453763585b45d41bb6d835a07ff2633fc4ce9292a98e1626906e",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/ocr.py": "e8c8d504185d8b55b89bcf886791ec088f2c71b36d13a846913d70071353deea",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/predictor.py": "933ea2908a20afe49f6f30ce6883b2ba86a04a057fbd4c057be17a5623a8d4fc",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/presentation.py": "d46d8303445142696aac2ea10da4d9d63e9cdb950a8f9cb84f23845b471a6be3",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/prior_quality.py": "ae94f3413d5b236846977ef0c80660aa248919f54dd8e50c562f2e4aeddc40d7",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/reveal_likelihood.py": "570bcb63386dd8b998d100bf45900fd8e49691d214879eed928ae8e7e7cba46d",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/runtime.py": "335c978c1c04f21b0011c5740820bf6683c650c1ffc26aefca14eb07faccdc7f",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/semantics.py": "b641e0b362021f9b517621e6843f076f031659cc1522436b9fc48fbcb7859b5a",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/state_machine.py": "3ec4796b70e830dd34a5bf6999fcc98c85548d786c4ee87bd00af3d3c9dd9447",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/ui.py": "d2bea6e25c169a75498fc93471094422ac1820348f9c08d4c78f002667cc8ebd",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/vision.py": "813e45e8e8d272f785adacf097220fc6173a0910b7745c71b2a65a7f5c99f7ee",
+    "apps/ephemeral-assistant/src/auction_moment_assistant/world_layout.py": "59cb94490acd009fe20a735230b8cc501f84162798353837f2e6e2988e5527a0",
+    "apps/ephemeral-assistant/src/generative_world_model_v2.py": "21b61c7ff53f7c493307a68f155b0ef1804133fbd9d8588a83ab9eacbaca5af6",
+    "apps/ephemeral-assistant/src/protocol_additive_value_model.py": "2f820f28c9382c05a7c373ed01b6c5d525ff2e9f6f315fb5b7996c9a0673e6b2",
+    "apps/ephemeral-assistant/src/protocol_analog_value_model.py": "5040c50b24afb5eafba823badb105b46c870dfe11e50b8639bbbc198039029be",
+    "apps/ephemeral-assistant/src/protocol_packet_residual_features.py": "abe6b6e3a3095ae6d7d9a866c3995dc3216d743664035b1aeee627aa218f7200",
+    "apps/ephemeral-assistant/src/protocol_position_quality_augment_model.py": "5808e92230c47b20a10896791bcb2ab19ddc4495654a55c73e624593e28a992b",
+    "apps/ephemeral-assistant/src/protocol_purple_area_augment_model.py": "8f8d4f1d8ba04739ae53ad615ecc5f5fa16d294137cff0db416f3e469f91dc1a",
+    "apps/ephemeral-assistant/src/protocol_repeated_quality_sampling.py": "e6990649b8a5a9afd629359992b8f137b1db4920fcae5a8075eb0b96c3176427",
+    "apps/ephemeral-assistant/src/protocol_round_residual_model.py": "f5d05ef2145fe9274aac0e4121d9b584cecff11d7c37247db8016faca1e22ae4",
+    "apps/ephemeral-assistant/src/structural_value_features.py": "d2f6fc113b8f327b9a033c1486db2dbe3f58067310e6781ffb42ec006a21f82e",
+    "apps/ephemeral-assistant/src/train_supervised_value_model.py": "0d10df40f8d8bf7b4a0c3cb6a123891a53b449a2e7e3610bf036f34e153674a1"
+  },
+  "sources_and_artifacts_unchanged_during_run": true,
+  "overall_decision_weighted": {
+    "baseline": {
+      "case_count": 277,
+      "mape_percent": 24.028265039407213,
+      "wape_percent": 19.20017141481914,
+      "mae_currency_units": 792574.5703971119,
+      "bias_currency_units": 211046.58483754512,
+      "bias_percent_of_total_actual": 5.112617483251771
+    },
+    "attributed": {
+      "case_count": 277,
+      "mape_percent": 22.475381835288086,
+      "wape_percent": 18.26474986947084,
+      "mae_currency_units": 753960.7833935018,
+      "bias_currency_units": 211818.4440433213,
+      "bias_percent_of_total_actual": 5.131315823587852
+    },
+    "response_count": 41,
+    "response_rate": 0.148014440433213,
+    "improved_count": 35,
+    "worsened_count": 6
+  },
+  "by_round": {
+    "1": {
+      "baseline": {
+        "case_count": 74,
+        "mape_percent": 24.22622915987736,
+        "wape_percent": 19.451318947618127,
+        "mae_currency_units": 772597.6486486486,
+        "bias_currency_units": 177661.02702702704,
+        "bias_percent_of_total_actual": 4.472886122949698
+      },
+      "attributed": {
+        "case_count": 74,
+        "mape_percent": 22.350314591266333,
+        "wape_percent": 18.34282031612351,
+        "mae_currency_units": 728568.5810810811,
+        "bias_currency_units": 180509.6081081081,
+        "bias_percent_of_total_actual": 4.544603477064319
+      },
+      "response_count": 13,
+      "response_rate": 0.17567567567567569,
+      "improved_count": 12,
+      "worsened_count": 1
+    },
+    "2": {
+      "baseline": {
+        "case_count": 67,
+        "mape_percent": 23.800607991608107,
+        "wape_percent": 19.43057547913033,
+        "mae_currency_units": 798233.671641791,
+        "bias_currency_units": 130287.28358208956,
+        "bias_percent_of_total_actual": 3.171448396064016
+      },
+      "attributed": {
+        "case_count": 67,
+        "mape_percent": 22.34222645604697,
+        "wape_percent": 18.402598707409727,
+        "mae_currency_units": 756003.0298507463,
+        "bias_currency_units": 137478.0447761194,
+        "bias_percent_of_total_actual": 3.3464856478071354
+      },
+      "response_count": 12,
+      "response_rate": 0.1791044776119403,
+      "improved_count": 9,
+      "worsened_count": 3
+    },
+    "3": {
+      "baseline": {
+        "case_count": 63,
+        "mape_percent": 24.517137186042994,
+        "wape_percent": 19.555756488677602,
+        "mae_currency_units": 807654.2857142857,
+        "bias_currency_units": 196757.87301587302,
+        "bias_percent_of_total_actual": 4.764104047966057
+      },
+      "attributed": {
+        "case_count": 63,
+        "mape_percent": 23.270350833212333,
+        "wape_percent": 18.814154077272086,
+        "mae_currency_units": 777026.0476190476,
+        "bias_currency_units": 198570.52380952382,
+        "bias_percent_of_total_actual": 4.807993813855546
+      },
+      "response_count": 7,
+      "response_rate": 0.1111111111111111,
+      "improved_count": 6,
+      "worsened_count": 1
+    },
+    "4": {
+      "baseline": {
+        "case_count": 48,
+        "mape_percent": 24.567926330923616,
+        "wape_percent": 19.286827371430398,
+        "mae_currency_units": 803359.9583333334,
+        "bias_currency_units": 314406.0,
+        "bias_percent_of_total_actual": 7.548165904512122
+      },
+      "attributed": {
+        "case_count": 48,
+        "mape_percent": 22.92995359043452,
+        "wape_percent": 18.299201481787446,
+        "mae_currency_units": 762222.0833333334,
+        "bias_currency_units": 317222.625,
+        "bias_percent_of_total_actual": 7.61578660128889
+      },
+      "response_count": 7,
+      "response_rate": 0.14583333333333334,
+      "improved_count": 6,
+      "worsened_count": 1
+    },
+    "5": {
+      "baseline": {
+        "case_count": 25,
+        "mape_percent": 21.78430464168353,
+        "wape_percent": 17.035598143464604,
+        "mae_currency_units": 777831.04,
+        "bias_currency_units": 363860.24,
+        "bias_percent_of_total_actual": 7.969053059420958
+      },
+      "attributed": {
+        "case_count": 25,
+        "mape_percent": 20.32633764930843,
+        "wape_percent": 16.418663398695646,
+        "mae_currency_units": 749662.32,
+        "bias_currency_units": 334733.6,
+        "bias_percent_of_total_actual": 7.331138513982707
+      },
+      "response_count": 2,
+      "response_rate": 0.08,
+      "improved_count": 2,
+      "worsened_count": 0
+    }
+  },
+  "time_compatible_map_quote_subset": {
+    "note": "Subset membership only; the same primary-prefix transcription supplies features.",
+    "baseline": {
+      "case_count": 29,
+      "mape_percent": 24.521006476486264,
+      "wape_percent": 20.226581208589575,
+      "mae_currency_units": 877283.5172413794,
+      "bias_currency_units": 96054.27586206897,
+      "bias_percent_of_total_actual": 2.2146199865531497
+    },
+    "attributed": {
+      "case_count": 29,
+      "mape_percent": 23.96003967800178,
+      "wape_percent": 20.05197154854582,
+      "mae_currency_units": 869710.2068965518,
+      "bias_currency_units": 88503.72413793103,
+      "bias_percent_of_total_actual": 2.040535047515236
+    },
+    "response_count": 2,
+    "response_rate": 0.06896551724137931,
+    "improved_count": 2,
+    "worsened_count": 0
+  },
+  "session_equal_weighted": {
+    "session_count": 74,
+    "response_session_count": 13,
+    "session_equal_weight_baseline_mape_percent": 24.28175340732647,
+    "session_equal_weight_attributed_mape_percent": 22.558720649905258,
+    "session_equal_weight_delta_pp": -1.7230327574212114,
+    "paired_session_bootstrap": {
+      "seed": 20261019,
+      "replicates": 10000,
+      "percentile95_delta_pp": [
+        -3.39008845112416,
+        -0.4141141272991323
+      ],
+      "unit": "session_not_quote"
+    },
+    "final_available_quote_per_session": {
+      "baseline_mape_percent": 23.323465082406482,
+      "attributed_mape_percent": 21.7689102981011
+    },
+    "improved_session_count": 12,
+    "worsened_session_count": 1,
+    "unchanged_session_count": 61
+  }
+}

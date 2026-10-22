@@ -541,6 +541,41 @@ class AssistantWindow:
                 + json.dumps(result.diagnostics, ensure_ascii=False),
             ),
         )
+        if self.inference.refine(self.store, result):
+            self._append_log(
+                "prediction-refine",
+                f"revision={result.revision} 预算内未收敛，后台继续细化",
+            )
+            self._refining_revision = result.revision
+            self.root.after(250, lambda: self._poll_refinement(result.revision))
+
+    def _poll_refinement(self, revision: int) -> None:
+        # A newer refinement has its own poll loop.
+        if getattr(self, "_refining_revision", None) != revision:
+            return
+        state, result = self.inference.refined(self.store)
+        if state == "running":
+            self.root.after(250, lambda: self._poll_refinement(revision))
+            return
+        self._refining_revision = None
+        if result is None:
+            self._append_log(
+                "prediction-refine",
+                "后台细化结束，保留原估值"
+                if state == "done"
+                else "后台细化已取消或被新任务替代",
+            )
+            return
+        self.prediction_var.set(format_prediction(result))
+        seconds = (result.conditional_diagnostics or {}).get("exact_refine_seconds")
+        self._append_log(
+            "prediction-refined",
+            (
+                f"revision={result.revision} status={result.status} "
+                f"细化 {seconds} 秒后收敛"
+            ),
+            (f"p10={result.p10} p50={result.p50} p90={result.p90}",),
+        )
 
     def refresh(self) -> None:
         snapshot = self.store.snapshot()

@@ -38,13 +38,50 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--model-base-url")
     parser.add_argument("--download-models", action="store_true")
     parser.add_argument("--verify-models", action="store_true")
-    parser.add_argument(
-        "--treasures", type=Path, default=default_treasures_path()
-    )
+    parser.add_argument("--treasures", type=Path, default=default_treasures_path())
     parser.add_argument("--adb", default="adb")
     parser.add_argument("--serial", default="")
     parser.add_argument("--device", default="auto")
     parser.add_argument("--minimum-ocr-confidence", type=float, default=0.85)
+    parser.add_argument(
+        "--experimental-v2-fusion",
+        action="store_true",
+        help="实验性启用 v2 原融合规则；默认使用 v6，v2 仅供诊断",
+    )
+    parser.add_argument(
+        "--experimental-conditional-sampling",
+        action="store_true",
+        help="启用条件采样研究模式及严格有效样本融合门，尚待独立验证",
+    )
+    parser.add_argument(
+        "--conditional-budget-seconds",
+        type=float,
+        default=2.0,
+        help="v2 条件采样预算（秒）；未收敛时回退 v6",
+    )
+    parser.add_argument(
+        "--experimental-exact-sampling",
+        action="store_true",
+        help="启用精确条件后验采样研究模式（多进程，需 scipy），尚待独立验证；不可用时回退 v6",
+    )
+    parser.add_argument(
+        "--exact-budget-seconds",
+        type=float,
+        default=8.0,
+        help="精确条件采样每次估值的时间预算（秒）",
+    )
+    parser.add_argument(
+        "--exact-lanes",
+        type=int,
+        default=4,
+        help="精确条件采样使用的工作进程数",
+    )
+    parser.add_argument(
+        "--exact-refine-seconds",
+        type=float,
+        default=45.0,
+        help="精确条件采样在预算内未收敛时，后台继续细化的时间上限（秒）；0 为关闭",
+    )
     parser.add_argument(
         "--bid-safety-factor",
         type=float,
@@ -96,6 +133,13 @@ def run(args: argparse.Namespace) -> int:
         catalog=catalog,
         minimum_ocr_confidence=args.minimum_ocr_confidence,
         bid_safety_factor=args.bid_safety_factor,
+        conditional_budget_seconds=args.conditional_budget_seconds,
+        conditional_sampling=args.experimental_conditional_sampling,
+        experimental_v2_fusion=args.experimental_v2_fusion,
+        exact_sampling=args.experimental_exact_sampling,
+        exact_budget_seconds=args.exact_budget_seconds,
+        exact_lanes=args.exact_lanes,
+        exact_refine_seconds=args.exact_refine_seconds,
     )
     source = AdbFrameSource(adb=args.adb, serial=args.serial)
     ocr = (
@@ -108,16 +152,29 @@ def run(args: argparse.Namespace) -> int:
         backend = UltralyticsVisionBackend(model_paths, device=args.device)
         vision = VisionRecognizer(backend, catalog)
     store = ObservationStore()
+    inference = InferenceCoordinator(predictor)
     pipeline = CapturePipeline(
-        source=source, store=store, ocr=ocr, vision=vision
+        source=source,
+        store=store,
+        ocr=ocr,
+        vision=vision,
+        # Exact mode starts sampling on the round's events while the map scrolls.
+        on_round_events=(
+            (lambda round_number, capture: inference.prewarm(store, round_number, capture))
+            if args.experimental_exact_sampling
+            else None
+        ),
     )
     window = AssistantWindow(
         store=store,
         pipeline=pipeline,
-        inference=InferenceCoordinator(predictor),
+        inference=inference,
         catalog=catalog,
     )
-    window.run()
+    try:
+        window.run()
+    finally:
+        inference.close()
     return 0
 
 
