@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auction-moment-research"
-version = "0.1.0"
+version = "0.1.1"
 description = "Reproducible research models and an anonymized text dataset for a five-round auction event."
 readme = "README.md"
 requires-python = ">=3.11"

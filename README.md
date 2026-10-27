@@ -10,7 +10,7 @@
 
 项目状态和返场条件分别见 [`STATUS.md`](STATUS.md) 与 [`RETURN_RUNBOOK.md`](RETURN_RUNBOOK.md)，归档资产说明见 [`archive/season-2026-archive-v1.md`](archive/season-2026-archive-v1.md)。
 
-> 冻结助手版本：[latest-model-v6-v2.0.0-beta.6](https://github.com/Ryan00956/auction-moment-research/releases/tag/latest-model-v6-v2.0.0-beta.6)；公开季末快照：[season-2026-archive-v1](https://github.com/Ryan00956/auction-moment-research/releases/tag/season-2026-archive-v1)。`main` 分支还包含归档之后的代码：默认的被动抓包输入和精确条件后验；要复现归档状态，请检出 `season-2026-archive-v1`。
+> 最新实验版：[beta.7：精确后验与阶段研究](https://github.com/helenananaa/auction-moment-research/releases/tag/latest-model-v6-v2.0.0-beta.7)，默认被动抓包与精确条件后验，先验仍是 v2；[发布说明](releases/beta.7.md)。公开季末快照仍为 [season-2026-archive-v1](https://github.com/helenananaa/auction-moment-research/releases/tag/season-2026-archive-v1)，包含旧 beta.6；要复现当时状态，请检出该标签。
 
 ## 一分钟看懂
 
@@ -486,7 +486,7 @@ OCR： 大厅等待 → 检测开局 → 识别事件 → 扫描本轮地图 →
 ### 1. 准备环境
 
 - Windows 10 或 Windows 11
-- Python 3.11 或 Python 3.12
+- Python 3.12（本次安装验收使用此版本）
 - Git
 - 可用的 ADB
 - 抓包模式（默认）：模拟器需开启 root ADB，并且模拟器内有 `tcpdump`；游戏流量默认走 `wlan0` 网卡
@@ -494,8 +494,10 @@ OCR： 大厅等待 → 检测开局 → 识别事件 → 扫描本轮地图 →
 
 ### 2. 下载并安装
 
+可从 [beta.7 Release](https://github.com/helenananaa/auction-moment-research/releases/tag/latest-model-v6-v2.0.0-beta.7) 下载完整 ZIP，解压后运行 `install.ps1`，再运行 `start-assistant.cmd`。ZIP 包含两个安装包、五个冻结模型、公开图鉴与事件表，以及阶段研究资料；Python 依赖仍需联网安装。也可以从源码安装：
+
 ```powershell
-git clone https://github.com/Ryan00956/auction-moment-research.git
+git clone https://github.com/helenananaa/auction-moment-research.git
 cd auction-moment-research
 
 py -3.12 -m venv .venv
@@ -530,7 +532,7 @@ adb shell command -v tcpdump
 ```powershell
 .\.venv\Scripts\auction-vision-assistant.exe `
   --download-models `
-  --models .\models\latest-model-v6-v2.0.0-beta.6 `
+  --models .\models\latest-model-v6-v2.0.0-beta.7 `
   --treasures .\data\v1\core\treasures.csv
 ```
 
@@ -553,7 +555,7 @@ adb shell command -v tcpdump
 
 ```powershell
 .\.venv\Scripts\auction-vision-assistant.exe `
-  --models .\models\latest-model-v6-v2.0.0-beta.6 `
+  --models .\models\latest-model-v6-v2.0.0-beta.7 `
   --treasures .\data\v1\core\treasures.csv `
   --input ocr
 ```
@@ -751,7 +753,7 @@ OCR 模式下，先检查本轮是否勾选了“已人工确认到底部”；�
 ## 项目状态
 
 - 状态：`HIBERNATING`，自 2026-08-06 起暂时休眠；
-- 冻结助手版本：`0.2.0b6`；
+- 当前实验助手版本：`0.2.0b7`；季末归档仍固定为 `0.2.0b6`；
 - 归档后的更新：默认改为被动抓包输入和精确条件后验（仅有开发回放结果）；
 - 完整正式对局端到端验证：**未完成**；
 - 新时间块前瞻盲测和生产启用：**未完成**；

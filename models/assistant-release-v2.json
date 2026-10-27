@@ -1,7 +1,7 @@
 {
   "schema_version": "auction-vision-model-release-v1",
-  "release": "latest-model-v6-v2.0.0-beta.6",
-  "download_base_url": "https://github.com/Ryan00956/auction-moment-research/releases/download/latest-model-v6-v2.0.0-beta.6",
+  "release": "latest-model-v6-v2.0.0-beta.7",
+  "download_base_url": "https://github.com/helenananaa/auction-moment-research/releases/download/latest-model-v6-v2.0.0-beta.7",
   "models": [
     {
       "filename": "clue-spatial-yolo26n-v1.pt",

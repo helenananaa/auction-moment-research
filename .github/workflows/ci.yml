@@ -60,5 +60,5 @@ jobs:
           $research = Get-ChildItem $wheelDir -Filter "auction_moment_research-*.whl" | Select-Object -First 1
           $assistant = Get-ChildItem $wheelDir -Filter "auction_moment_assistant-*.whl" | Select-Object -First 1
           & $python -m pip install --no-deps $research.FullName $assistant.FullName
-          & $python -c "from importlib.metadata import version; assert version('auction-moment-research') == '0.1.0'; assert version('auction-moment-assistant') == '0.2.0b6'"
+          & $python -c "from importlib.metadata import version; assert version('auction-moment-research') == '0.1.1'; assert version('auction-moment-assistant') == '0.2.0b7'"
       - run: python scripts/verify_public_release.py

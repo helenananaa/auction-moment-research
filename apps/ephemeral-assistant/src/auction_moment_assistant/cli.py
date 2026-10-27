@@ -30,7 +30,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path(
             os.environ.get(
                 "AUCTION_ASSISTANT_MODELS",
-                "models/latest-model-v6-v2.0.0-beta.6",
+                "models/latest-model-v6-v2.0.0-beta.7",
             )
         ),
     )
@@ -69,7 +69,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--experimental-v2-fusion",
         action="store_true",
-        help="实验性启用 v2 原融合规则；默认使用 v6，v2 仅供诊断",
+        help="改用实验性的 v2 原融合规则；不使用默认精确条件后验",
     )
     parser.add_argument(
         "--experimental-conditional-sampling",

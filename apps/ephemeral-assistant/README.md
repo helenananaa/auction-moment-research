@@ -259,7 +259,7 @@ Apache-2.0，数据、报告和结果仍为 CC BY 4.0。
 ```powershell
 python -m pip install -e .
 python -m pip install -e .\apps\ephemeral-assistant
-auction-vision-assistant --models C:\path\to\latest-model-v6-v2.0.0-beta.6
+auction-vision-assistant --models C:\path\to\latest-model-v6-v2.0.0-beta.7
 ```
 
 按设计，启动后不需要再点击“开始识别”：程序会自动进入大厅监视。需要纠错时直接操作

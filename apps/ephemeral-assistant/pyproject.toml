@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "auction-moment-assistant"
-version = "0.2.0b6"
-description = "An ephemeral OCR and vision assistant for five-round auction research."
+version = "0.2.0b7"
+description = "A passive-packet and optional vision assistant with exact conditional auction estimates."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "AGPL-3.0-only"
 authors = [{ name = "Helenanana" }]
 dependencies = [
-  "auction-moment-research>=0.1.0",
+  "auction-moment-research>=0.1.1",
   "numpy>=2.5,<3",
   "ortools>=9.15,<10",
   "joblib>=1.5,<2",

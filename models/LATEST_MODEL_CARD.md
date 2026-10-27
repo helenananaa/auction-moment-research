@@ -1,7 +1,9 @@
-# Latest v6 + world-model-v2 model card
+# beta.7: exact conditional estimates and frozen v6/v2 models
 
-This release contains the newest frozen value-model candidate and generative
-world model used by the project at the time of publication:
+The assistant defaults to passive packet input and the exact conditional
+posterior using v2. OCR/YOLO remains available with `--input ocr`; `--v6-only`
+selects the frozen value estimator. The five runtime models are byte-identical
+to beta.6; the updated behavior comes from the inference and evidence paths.
 
 - `latest-value-model-v6.joblib`: candidate
   `protocol-round-residual-v6-72a08074c3d8af81`;
@@ -15,7 +17,19 @@ wheel does include the separately documented 120 public 80x80 catalog
 thumbnails used for manual identity selection. The release builder compares
 original and sanitized predictions on deterministic probes.
 
-## OCR adapter boundary
+R2/BASE/G and KG_mix2/BASE/G ship as separate offline research parameters and
+a NumPy terminal-world generator. They are not loaded by the assistant. Their
+point accuracy did not clearly beat v2; historical interval scores improved
+about 10%. See the stage report and their separate model card.
+
+## Evidence boundary
+
+Packet mode decodes only the documented messages visible before bidding. It
+does not submit bids or use settlement messages. The exact sampler combines
+integer event constraints with revealed identities, bounded parallel sampling
+and background refinement. Its row likelihood and reveal handling retain
+documented approximations; “exact” does not mean that every aspect of layout
+or posterior computation is exact.
 
 The public assistant uses `ocr-visible-pre-bid-adapter-v1`. It accepts parsed
 events above the configured OCR threshold or human-confirmed edits. Automatic
@@ -30,7 +44,7 @@ validated as equivalent to the private structured-input path. Outputs are
 uncalibrated research estimates with `actionable=false`; the assistant never
 submits a bid.
 
-If the initial finite world population is eliminated, world-model-v2 performs
+In the optional legacy v2 filter, if the initial population is eliminated, it performs
 a deterministic, cached conditional rejection resample of up to 32,768 worlds.
 A recovered result is explicitly provisional and uncalibrated. Exhaustion after
 resampling falls back to the frozen v6 interval and manual-only conservative bid
