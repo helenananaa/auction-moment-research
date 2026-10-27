@@ -69,6 +69,10 @@ Joblib/pickle formats can execute code while loading. The assistant only loads
 the release filename after size and SHA-256 verification. Do not load an
 untrusted replacement file merely because it has the same filename.
 
+The assistant pins scikit-learn to 1.9.0, matching the frozen v6 training
+serialization. The release dependency snapshot records the other versions
+used for clean-environment installation and device-free validation.
+
 ## License
 
 The v6 and world-model-v2 artifacts are released under Apache License 2.0. The
