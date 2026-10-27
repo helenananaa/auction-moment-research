@@ -190,15 +190,33 @@ def verify_archive_contract(errors: list[str]) -> None:
         if boundary.get(field) is not False:
             errors.append(f"archive capability must keep {field}=false")
 
+    # The descriptor describes the frozen season, while main may legitimately
+    # add dependencies or newer research. Validate those bytes at the named
+    # archive commit; current data, results and privacy are checked separately.
+    source_ref = descriptor.get("canonical_source_ref")
+    if source_ref != "season-2026-archive-v1":
+        errors.append("archive canonical source ref mismatch")
+        return
+    revision = subprocess.run(
+        ["git", "rev-parse", "--verify", f"refs/tags/{source_ref}^{{commit}}"],
+        cwd=REPOSITORY_ROOT, capture_output=True, check=False,
+    )
+    if revision.returncode != 0:
+        errors.append("archive source tag unavailable; fetch tags before verification")
+        return
+    commit = revision.stdout.decode("ascii").strip()
     for expected in descriptor.get("component_manifests") or []:
         relative = str(expected.get("path") or "")
-        path = REPOSITORY_ROOT / relative
-        if not path.is_file():
+        archived = subprocess.run(
+            ["git", "show", f"{commit}:{relative}"],
+            cwd=REPOSITORY_ROOT, capture_output=True, check=False,
+        )
+        if archived.returncode != 0:
             errors.append(f"archive component manifest missing: {relative}")
             continue
-        if path.stat().st_size != expected.get("bytes"):
+        if len(archived.stdout) != expected.get("bytes"):
             errors.append(f"archive component byte count mismatch: {relative}")
-        if sha256_file(path) != expected.get("sha256"):
+        if hashlib.sha256(archived.stdout).hexdigest() != expected.get("sha256"):
             errors.append(f"archive component sha256 mismatch: {relative}")
 
     readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
