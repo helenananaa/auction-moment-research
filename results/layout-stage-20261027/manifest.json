@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "stage": "2026-10-27 geometry and full-layout historical research",
+  "publication_scope": "Aggregate metrics, protocols, checks and report only; source hashes do not imply source publication.",
+  "outputs": [
+    {
+      "path": "README.md",
+      "bytes": 3078,
+      "sha256": "b0a3e277901f10e8e654f79ff078857f9adc031b62910f8b3680287e1a8e6f11"
+    },
+    {
+      "path": "geometry-replay.json",
+      "bytes": 5787,
+      "sha256": "b8e78c101bb56c0d20ac516c611a546c863b4bdaacc1d9c2feeea18943eb7fd2"
+    },
+    {
+      "path": "full-layout-replay.json",
+      "bytes": 5360,
+      "sha256": "add1189eacc4349475860088453c47cb5a4c724739a88afa5e06158fe3f6711f"
+    },
+    {
+      "path": "protocols.json",
+      "bytes": 2980,
+      "sha256": "a7f815aa00451dc795b4e6cbed7d1925d510bae197e08dc96afa16e876d3754e"
+    },
+    {
+      "path": "checks.json",
+      "bytes": 3635,
+      "sha256": "dfe9fe6151bc22badd3c11b17e9c570e9b207fafd7fbf36e1c50bca13becc80b"
+    },
+    {
+      "path": "../../reports/layout-stage-20261027.md",
+      "bytes": 8418,
+      "sha256": "16f87f2017516dc661e051e871408310773075c045ff0e0078cd0e3395d535b1"
+    }
+  ],
+  "private_sources": [
+    {
+      "logical_name": "position-study-20261027/score-final.json",
+      "bytes": 5997,
+      "sha256": "c1fce9e2943f823a670ebe48709bd0fcc55043faabcf9d5444d686b0aae5f200"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/score-final.json",
+      "bytes": 5587,
+      "sha256": "942a0050643a2b26334be4afd7ef6ea0711dcaad3ec8f0cb729eefd2fe73e161"
+    },
+    {
+      "logical_name": "position-study-20261027/protocol.json",
+      "bytes": 741,
+      "sha256": "138cbaaddc68297fd00b04fd06d46ffdd5253b08fd2acd9c40c989ba49fbdf63"
+    },
+    {
+      "logical_name": "position-study-20261027/refine-protocol.json",
+      "bytes": 1463,
+      "sha256": "c16b6812798ef4d86949c7b0851cf46757c74a114c2c40ebfdeedfb04ca74121"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/protocol-v3.json",
+      "bytes": 918,
+      "sha256": "7ab6c620b7a2edff5bccb6ad2605bec64c5799a10758e1e9e666836ba32d3784"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/refine-protocol.json",
+      "bytes": 2658,
+      "sha256": "529f25d0e8081efed1a1b0cd789d7278624ab199115451643fd1d1d8e750dbc4"
+    },
+    {
+      "logical_name": "position-study-20261027/audit.json",
+      "bytes": 40407,
+      "sha256": "838517882ff695975ee6a48c69ecbede03297fc2ac04881840564e42eeb8d96d"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/scored-cases-final.json",
+      "bytes": 1435472,
+      "sha256": "ed178afb7deda9d5e1e37ebb8febf1973fbbe9427e40c82c1fd1d44b6b0df867"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/tests.json",
+      "bytes": 360,
+      "sha256": "1e3c3203e930fa203369ab2f63b6c30a944f8ca37577174955f2069c32870649"
+    },
+    {
+      "logical_name": "position-study-20261027/tests.json",
+      "bytes": 101,
+      "sha256": "e8f3a8876e65f969b8b5ea90b4c4abd7ced70ce1981bcae9c52e55742f98a6f7"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/validation.json",
+      "bytes": 446,
+      "sha256": "ef5c11836f69277b7eda4aaffc7ff36d0c8ffcde5f50bc2bcd9c386f884c3e0f"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/multiline-tests.json",
+      "bytes": 435,
+      "sha256": "7913f8eadf6f764438e75cd93792255f0aff76c2b17a829b261935777e60ff77"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/constraint-audit.json",
+      "bytes": 87,
+      "sha256": "fcac0f252b825c796e247e3277b593a370cf2acf6f7955ddecd8bd7e92bb885e"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/order-omnibus.json",
+      "bytes": 451,
+      "sha256": "77e18f5350426c17e723ef9a9018865b4582260d93e11e9fc4a341e107324f62"
+    },
+    {
+      "logical_name": "full-layout-study-20261027/verification-inputs.json",
+      "bytes": 181,
+      "sha256": "9dff8bf62bdbcb46108c38466a7659bba68a4445fbb921c57d63fcedad5fe5d2"
+    }
+  ]
+}

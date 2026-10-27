@@ -1,0 +1,92 @@
+{
+  "geometry": {
+    "initial": {
+      "arms": [
+        "baseline",
+        "attributes",
+        "positions"
+      ],
+      "config": {
+        "n_vectors": 1024,
+        "pool_size": 512,
+        "worlds": 24000,
+        "rounds": 2,
+        "min_ess": 500.0,
+        "min_ess_size_avg": 1000.0,
+        "max_vectors": 4096
+      },
+      "replicates": 2,
+      "seeds": "202610270000 + index*10 + replicate",
+      "cohort": "74 already-consumed games / 277 quote-bounded prefixes",
+      "model": "frozen beta.7 v2",
+      "score": "per-game equal MAPE and 80% interval score; session bootstrap",
+      "qualification": "development experiment only; no position likelihood, no prospective claim",
+      "label_used_for_prediction": false,
+      "source_sha256": "b71899a389cd4a7a49023210b655639142720e4a44417fd84e9e2b620b1244fe"
+    },
+    "refinement": {
+      "config": {
+        "n_vectors": 4096,
+        "pool_size": 2048,
+        "worlds": 72000,
+        "rounds": 2,
+        "min_ess": 1000.0,
+        "min_ess_size_avg": 1500.0,
+        "max_vectors": 8192
+      },
+      "labels_used": false,
+      "trigger": "Any arm: either seed ESS<500/status not ok, point gap>2.5%, or quantile gap>5%",
+      "policy": "Rerun all three arms with equal larger budgets and two seeds; keep unresolved cases"
+    }
+  },
+  "full_layout": {
+    "initial": {
+      "config": {
+        "n_vectors": 4096,
+        "pool_size": 2048,
+        "worlds": 48000,
+        "rounds": 1,
+        "min_ess": 500.0,
+        "min_ess_size_avg": 1000.0,
+        "max_vectors": 4096
+      },
+      "outer": 1024,
+      "particles": 64,
+      "replicates": 2,
+      "refinement": {
+        "outer": 4096,
+        "particles": 256,
+        "criterion": "ancestor ESS<200 or two-seed point gap>2.5% or quantile gap>5%",
+        "labels_used": false
+      },
+      "arms": [
+        "baseline",
+        "height",
+        "layout"
+      ],
+      "order": "uniform conditional on multiset and pooled random reveals; fixed observed indices",
+      "row_policy": "replace empirical row likelihood with exact generated height; no double counting",
+      "proposal_tilt": "exp(empirical row loglik) + 0.01; positive support floor; absolute mass correction",
+      "source_sha256": "b71899a389cd4a7a49023210b655639142720e4a44417fd84e9e2b620b1244fe",
+      "default_unchanged": true
+    },
+    "refinement": {
+      "outer": 4096,
+      "particles": 256,
+      "labels_used": false,
+      "criterion": "any spatial arm ancestor ESS<200, point gap>2.5%, quantile gap>5%, or no support",
+      "initial_stability": {
+        "baseline_stable": 236,
+        "height_stable": 191,
+        "layout_stable": 34
+      }
+    }
+  },
+  "stability": {
+    "baseline_min_seed_ess": 500,
+    "spatial_min_seed_ancestor_ess": 200,
+    "max_relative_point_gap": 0.025,
+    "max_relative_quantile_gap": 0.05
+  },
+  "qualification": "Historical development replay only; no prospective validation or default model promotion."
+}

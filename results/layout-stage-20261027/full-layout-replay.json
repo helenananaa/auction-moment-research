@@ -1,0 +1,227 @@
+{
+  "games": 74,
+  "decisions": 277,
+  "refined_decisions": 245,
+  "per_game_equal": {
+    "baseline": {
+      "mape": 15.541338177978123,
+      "interval_score": 3001235.706081081,
+      "width": 2690718.0484234234,
+      "coverage": 87.70270270270271,
+      "fallback_decisions": 0
+    },
+    "height_raw": {
+      "mape": 15.474682886908218,
+      "interval_score": 2996482.8319819816,
+      "width": 2681056.311711712,
+      "coverage": 87.25225225225226,
+      "fallback_decisions": 0
+    },
+    "layout_raw": {
+      "mape": 16.790108644613312,
+      "interval_score": 3717655.1477477485,
+      "width": 2462921.7536036037,
+      "coverage": 80.22522522522523,
+      "fallback_decisions": 41
+    },
+    "height_gated": {
+      "mape": 15.486980534846532,
+      "interval_score": 2998298.3277027025,
+      "width": 2682071.1655405406,
+      "coverage": 87.25225225225226,
+      "fallback_decisions": 48
+    },
+    "layout_gated": {
+      "mape": 15.634744999989552,
+      "interval_score": 3026625.3846846847,
+      "width": 2680188.7045045043,
+      "coverage": 87.70270270270271,
+      "fallback_decisions": 208
+    }
+  },
+  "comparisons": {
+    "height_raw_minus_baseline": {
+      "mape": {
+        "delta": -0.06665529106990674,
+        "ci95": [
+          -0.18949852726530655,
+          0.05030612171724483
+        ]
+      },
+      "interval_score": {
+        "delta": -4752.874099099082,
+        "ci95": [
+          -18575.36899774772,
+          8427.28298986489
+        ]
+      },
+      "width": {
+        "delta": -9661.736711711703,
+        "ci95": [
+          -20590.477117117123,
+          -29.219572072079256
+        ]
+      },
+      "coverage": {
+        "delta": -0.45045045045045046,
+        "ci95": [
+          -1.3513513513513513,
+          0.0
+        ]
+      }
+    },
+    "layout_raw_minus_baseline": {
+      "mape": {
+        "delta": 1.2487704666351873,
+        "ci95": [
+          -0.013020260016508032,
+          2.517819553909438
+        ]
+      },
+      "interval_score": {
+        "delta": 716419.4416666668,
+        "ci95": [
+          293302.4863907658,
+          1222298.5170157652
+        ]
+      },
+      "width": {
+        "delta": -227796.29481981983,
+        "ci95": [
+          -365170.5942511261,
+          -110440.15236486492
+        ]
+      },
+      "coverage": {
+        "delta": -7.477477477477477,
+        "ci95": [
+          -11.756756756756754,
+          -3.806306306306306
+        ]
+      }
+    },
+    "layout_raw_minus_height_raw": {
+      "mape": {
+        "delta": 1.3154257577050943,
+        "ci95": [
+          0.03049858530033777,
+          2.585159727057195
+        ]
+      },
+      "interval_score": {
+        "delta": 721172.3157657657,
+        "ci95": [
+          299189.4412105856,
+          1230188.676475225
+        ]
+      },
+      "width": {
+        "delta": -218134.55810810812,
+        "ci95": [
+          -356006.17047297297,
+          -99735.112775901
+        ]
+      },
+      "coverage": {
+        "delta": -7.027027027027027,
+        "ci95": [
+          -11.396959459459458,
+          -3.2432432432432434
+        ]
+      }
+    },
+    "height_gated_minus_baseline": {
+      "mape": {
+        "delta": -0.054357643131592304,
+        "ci95": [
+          -0.1593506037483745,
+          0.04579335964614815
+        ]
+      },
+      "interval_score": {
+        "delta": -2937.3783783783783,
+        "ci95": [
+          -14841.02636261261,
+          9052.166216216187
+        ]
+      },
+      "width": {
+        "delta": -8646.882882882892,
+        "ci95": [
+          -18079.27481418919,
+          -33.39354166669581
+        ]
+      },
+      "coverage": {
+        "delta": -0.45045045045045046,
+        "ci95": [
+          -1.3513513513513513,
+          0.0
+        ]
+      }
+    },
+    "layout_gated_minus_baseline": {
+      "mape": {
+        "delta": 0.09340682201142814,
+        "ci95": [
+          -0.1465416378220924,
+          0.371753852501513
+        ]
+      },
+      "interval_score": {
+        "delta": 25389.6786036036,
+        "ci95": [
+          -11865.893164414416,
+          85851.62154842335
+        ]
+      },
+      "width": {
+        "delta": -10529.343918918916,
+        "ci95": [
+          -19719.55490990989,
+          -2139.735720720721
+        ]
+      },
+      "coverage": {
+        "delta": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "stability": {
+    "baseline": {
+      "stable": 236,
+      "no_support": 0,
+      "median_seconds_two_seeds": 2.183190400006424,
+      "p95_seconds_two_seeds": 8.587467779994766
+    },
+    "height": {
+      "stable": 234,
+      "no_support": 0,
+      "median_seconds_two_seeds": 41.70611760000611,
+      "p95_seconds_two_seeds": 96.25377954000432
+    },
+    "layout": {
+      "stable": 73,
+      "no_support": 41,
+      "median_seconds_two_seeds": 9.422353500005556,
+      "p95_seconds_two_seeds": 45.47092021999997
+    }
+  },
+  "common_stable_decisions": 67,
+  "common_stable_decision_mape": {
+    "baseline": 18.291489797183598,
+    "height": 18.163306757631947,
+    "layout": 18.399859296834414
+  },
+  "raw_policy": "fallback only when both seeds have no support; low ESS retained and flagged",
+  "gate_policy": "baseline fallback unless both baseline and challenger pass seed stability checks",
+  "bootstrap": {
+    "unit": "session",
+    "repetitions": 10000,
+    "seed": 20261028088
+  }
+}

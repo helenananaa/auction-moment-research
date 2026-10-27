@@ -1,0 +1,145 @@
+{
+  "geometry": {
+    "audit": {
+      "geometry_audit": {
+        "decisions": 277,
+        "with_coordinates": 252,
+        "anchors": 2661,
+        "anchors_known_quality": 1426,
+        "decisions_with_narrower_sizes": 172,
+        "known_quality_narrowed_decisions": 143,
+        "rainbow_narrowed_decisions": 16,
+        "narrowed_anchors": 768
+      },
+      "first_fit_audit": {
+        "maps": 1642,
+        "exact_maps": 1642,
+        "items": 52909,
+        "exact_items": 52909
+      },
+      "truth_support_failures": 0
+    },
+    "tests": {
+      "hall_bruteforce_cases": 1000,
+      "geometry_boundary_and_neighbor": true,
+      "passed": true
+    }
+  },
+  "full_layout": {
+    "tests": {
+      "success": true,
+      "enumeration": [
+        {
+          "conditional_random_quality": false,
+          "exact": 0.16666666666666666,
+          "smc": 0.16666666666666677
+        },
+        {
+          "conditional_random_quality": true,
+          "exact": 0.16666666666666666,
+          "smc": 0.1666627197265625
+        }
+      ],
+      "traced_case_count": 3
+    },
+    "validation": {
+      "success": true,
+      "likelihood_tests": [
+        {
+          "mode": "identity",
+          "exact": 0.3333333333333333,
+          "estimated": 0.3333333333333336
+        },
+        {
+          "mode": "all_quality",
+          "exact": 0.08333333333333333,
+          "estimated": 0.08319270833333332
+        }
+      ],
+      "baseline_row_reconstruction_bit_exact": true,
+      "empirical_row_support_floor": 0.01,
+      "full_target_does_not_use_empirical_row_likelihood": true
+    },
+    "multiline_tests": {
+      "success": true,
+      "rows": 4,
+      "checks": [
+        {
+          "arm": "height",
+          "permutations": 720,
+          "exact": 0.6388888888888888,
+          "estimated": 0.6365625,
+          "standard_error": 0.0009538773768251184
+        },
+        {
+          "arm": "layout",
+          "permutations": 216,
+          "exact": 0.018518518518518517,
+          "estimated": 0.018604448730746882,
+          "standard_error": 0.00013539466908576563
+        }
+      ]
+    },
+    "constraints": {
+      "decisions": 277,
+      "checked_item_instances": 9705,
+      "truth_exclusions": 0
+    },
+    "order_omnibus": {
+      "training_maps": 1556,
+      "permutations": 500,
+      "quality_stat": 17.42884058186644,
+      "size_stat": 35.93347205052061,
+      "quality_p": 0.3273453093812375,
+      "size_p": 0.3253493013972056,
+      "color_quintile_observed": [
+        476.0,
+        479.0,
+        503.0,
+        470.0,
+        509.0
+      ],
+      "color_quintile_expected": [
+        487.26023749812094,
+        487.948712203762,
+        486.5821005962296,
+        487.948712203762,
+        487.26023749812094
+      ]
+    },
+    "input_verification": {
+      "success": true,
+      "frozen_hashes_checked": 15,
+      "selected_prediction_records": 554,
+      "decision_count": 277,
+      "positive_height_samples_outside_empirical_support": 4
+    },
+    "density_bins": [
+      {
+        "anchors": "0",
+        "decisions": 25,
+        "stable": 22,
+        "no_support": 0
+      },
+      {
+        "anchors": "1-4",
+        "decisions": 56,
+        "stable": 33,
+        "no_support": 0
+      },
+      {
+        "anchors": "5-9",
+        "decisions": 73,
+        "stable": 16,
+        "no_support": 0
+      },
+      {
+        "anchors": "10+",
+        "decisions": 123,
+        "stable": 2,
+        "no_support": 41
+      }
+    ],
+    "density_definition": "Observed anchor counts joined by frozen prefix index; each prefix counted once. Per-prefix records excluded from public export."
+  }
+}
