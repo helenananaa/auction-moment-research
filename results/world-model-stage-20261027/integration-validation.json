@@ -1,0 +1,41 @@
+{
+  "scope": "Local integration validation, not new scientific fitting or live qualification.",
+  "research_suite": {
+    "tests": 10,
+    "passed": 10
+  },
+  "assistant_suite": {
+    "tests": 211,
+    "passed": 209,
+    "skipped": 2,
+    "skip_reason": "optional released model artifacts unavailable"
+  },
+  "followup_after_archive_fix_and_formatting": {
+    "tests": 6,
+    "passed": 6,
+    "note": "Includes one new archive-contract regression test; other tests overlap the initial research suite."
+  },
+  "lint": "ruff passed for five changed Python files",
+  "public_release_check": "passed in clean integration worktree",
+  "frozen_statistics": "831 historical forecasts and 40 recovery trials checked, not refitted",
+  "source_hashes_rechecked": 384,
+  "synthetic_cli_smoke": [
+    {
+      "family": "R2",
+      "worlds": 10000,
+      "seed": 20261027,
+      "mean_total": 4129683.3106,
+      "above_7m_fraction": 0.0206
+    },
+    {
+      "family": "KG_mix2",
+      "worlds": 10000,
+      "seed": 20261027,
+      "mean_total": 4136759.3506,
+      "above_7m_fraction": 0.0205
+    }
+  ],
+  "default_prior_changed": false,
+  "raw_private_data_published": false,
+  "fresh_prospective_validation_completed": false
+}

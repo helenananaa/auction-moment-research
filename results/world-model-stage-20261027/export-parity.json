@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "comparison": "Portable NumPy count recurrence and value weight versus frozen research adapter.",
+  "models": [
+    {
+      "family": "R2",
+      "count_law_max_absolute_error_by_component": [
+        1.3010426069826053e-16,
+        1.3227266504323154e-16
+      ],
+      "value_weight_max_absolute_error": 2.5673907444456745e-16,
+      "identity_probabilities": "Exact frozen adapter arrays, reordered to public catalog IDs."
+    },
+    {
+      "family": "KG_mix2",
+      "count_law_max_absolute_error_by_component": [
+        2.949029909160572e-17,
+        5.551115123125783e-17
+      ],
+      "value_weight_max_absolute_error": 1.887379141862766e-15,
+      "identity_probabilities": "Exact frozen adapter arrays, reordered to public catalog IDs."
+    }
+  ]
+}

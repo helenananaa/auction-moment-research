@@ -28,6 +28,7 @@ jobs:
           PYTHONPATH: apps/ephemeral-assistant/src
         run: python -m unittest discover -s apps/ephemeral-assistant/tests -v
       - run: python scripts/verify_public_release.py
+      - run: python scripts/verify_staged_research.py
       - name: Rebuild model smoke artifact
         run: >-
           python -m auction_moment_research.train_world_model

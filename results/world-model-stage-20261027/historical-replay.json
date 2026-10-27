@@ -1,0 +1,979 @@
+{
+  "schema_version": 1,
+  "scope": "historical_candidate_posterior_replay_without_independent_timestamps",
+  "weighting": "within-game mean followed by equal weight per game; decision-weighted scores also retained",
+  "bootstrap_replicates": 1999,
+  "scores": {
+    "scope": "historical_candidate_posterior_replay_without_independent_timestamps",
+    "arms": {
+      "v2": {
+        "all": {
+          "decisions": 277,
+          "games": 74,
+          "valid_decisions": 277,
+          "failed_decisions": 0,
+          "status_counts": {
+            "low_ess": 47,
+            "ok": 230
+          },
+          "decision_weighted": {
+            "absolute_error": 632668.80866426,
+            "absolute_percentage_error": 0.15479113509343767,
+            "covered80": 0.8772563176895307,
+            "interval_width": 2799397.4079422383,
+            "below_p10": 0.09747292418772563,
+            "above_p90": 0.02527075812274368,
+            "interval_score80": 3112433.3646209384,
+            "pinball_0.1": 118221.20433212996,
+            "pinball_0.5": 321866.48014440434,
+            "pinball_0.9": 193022.13212996387
+          },
+          "game_weighted": {
+            "absolute_error": 623001.0398648648,
+            "absolute_percentage_error": 0.15660170117243366,
+            "covered80": 0.877927927927928,
+            "interval_width": 2685266.158108108,
+            "below_p10": 0.10067567567567567,
+            "above_p90": 0.021396396396396396,
+            "interval_score80": 2993349.61981982,
+            "pinball_0.1": 116732.29173423423,
+            "pinball_0.5": 307787.9207207207,
+            "pinball_0.9": 182602.67024774768
+          }
+        },
+        "over700": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        },
+        "700to1000": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        },
+        "over1000": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        }
+      },
+      "R2": {
+        "all": {
+          "decisions": 277,
+          "games": 74,
+          "valid_decisions": 277,
+          "failed_decisions": 0,
+          "status_counts": {
+            "low_ess": 37,
+            "ok": 240
+          },
+          "decision_weighted": {
+            "absolute_error": 624559.4187725632,
+            "absolute_percentage_error": 0.15535861396107678,
+            "covered80": 0.8411552346570397,
+            "interval_width": 2366739.794223827,
+            "below_p10": 0.11913357400722022,
+            "above_p90": 0.039711191335740074,
+            "interval_score80": 2778724.884476534,
+            "pinball_0.1": 116700.36859205777,
+            "pinball_0.5": 318307.08122743684,
+            "pinball_0.9": 161172.11985559564
+          },
+          "game_weighted": {
+            "absolute_error": 615298.3853603605,
+            "absolute_percentage_error": 0.15749757848462795,
+            "covered80": 0.8443693693693693,
+            "interval_width": 2288179.4952702704,
+            "below_p10": 0.12229729729729728,
+            "above_p90": 0.03333333333333333,
+            "interval_score80": 2697691.053828829,
+            "pinball_0.1": 117166.19592342342,
+            "pinball_0.5": 305737.9565315315,
+            "pinball_0.9": 152602.90945945945
+          }
+        },
+        "over700": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        },
+        "700to1000": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        },
+        "over1000": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        }
+      },
+      "KG_mix2": {
+        "all": {
+          "decisions": 277,
+          "games": 74,
+          "valid_decisions": 277,
+          "failed_decisions": 0,
+          "status_counts": {
+            "low_ess": 35,
+            "ok": 242
+          },
+          "decision_weighted": {
+            "absolute_error": 620329.5090252707,
+            "absolute_percentage_error": 0.15501928720529026,
+            "covered80": 0.8375451263537906,
+            "interval_width": 2368681.606498195,
+            "below_p10": 0.1263537906137184,
+            "above_p90": 0.036101083032490974,
+            "interval_score80": 2764746.4079422383,
+            "pinball_0.1": 116073.96245487365,
+            "pinball_0.5": 313862.4440433213,
+            "pinball_0.9": 160400.67833935015
+          },
+          "game_weighted": {
+            "absolute_error": 606922.9004504505,
+            "absolute_percentage_error": 0.15602853443803089,
+            "covered80": 0.838063063063063,
+            "interval_width": 2290419.9520270266,
+            "below_p10": 0.1313063063063063,
+            "above_p90": 0.03063063063063063,
+            "interval_score80": 2682092.560135135,
+            "pinball_0.1": 116158.29277027029,
+            "pinball_0.5": 299552.4752252252,
+            "pinball_0.9": 152050.9632432432
+          }
+        },
+        "over700": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        },
+        "700to1000": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        },
+        "over1000": {
+          "decisions": 0,
+          "games": 0,
+          "valid_decisions": 0,
+          "failed_decisions": 0,
+          "status_counts": {},
+          "decision_weighted": null,
+          "game_weighted": null
+        }
+      }
+    },
+    "comparisons": {
+      "KG_mix2 minus R2": {
+        "paired_games": 74,
+        "paired_decisions": 277,
+        "metrics": {
+          "absolute_percentage_error": {
+            "left_minus_right": -0.001469044046597057,
+            "game_bootstrap95": [
+              -0.005722404827238597,
+              0.002953363326611772
+            ]
+          },
+          "absolute_error": {
+            "left_minus_right": -8375.484909909908,
+            "game_bootstrap95": [
+              -24496.803355855853,
+              6724.338063063056
+            ]
+          },
+          "interval_score80": {
+            "left_minus_right": -15598.493693693697,
+            "game_bootstrap95": [
+              -65150.70891891892,
+              31643.765743243228
+            ]
+          },
+          "pinball_0.5": {
+            "left_minus_right": -6185.481306306305,
+            "game_bootstrap95": [
+              -14471.395236486485,
+              2206.1398254504493
+            ]
+          }
+        },
+        "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+      },
+      "KG_mix2 minus v2": {
+        "paired_games": 74,
+        "paired_decisions": 277,
+        "metrics": {
+          "absolute_percentage_error": {
+            "left_minus_right": -0.000573166734402804,
+            "game_bootstrap95": [
+              -0.008211190249541943,
+              0.007611461393804468
+            ]
+          },
+          "absolute_error": {
+            "left_minus_right": -16078.139414414414,
+            "game_bootstrap95": [
+              -43123.2708445946,
+              13273.726148648648
+            ]
+          },
+          "interval_score80": {
+            "left_minus_right": -311257.0596846847,
+            "game_bootstrap95": [
+              -464019.8160135135,
+              -147038.26551801807
+            ]
+          },
+          "pinball_0.5": {
+            "left_minus_right": -8235.445495495494,
+            "game_bootstrap95": [
+              -22303.606283783785,
+              7250.722117117117
+            ]
+          }
+        },
+        "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+      },
+      "R2 minus v2": {
+        "paired_games": 74,
+        "paired_decisions": 277,
+        "metrics": {
+          "absolute_percentage_error": {
+            "left_minus_right": 0.0008958773121942527,
+            "game_bootstrap95": [
+              -0.005561588163898948,
+              0.008137487338831007
+            ]
+          },
+          "absolute_error": {
+            "left_minus_right": -7702.654504504508,
+            "game_bootstrap95": [
+              -35429.6546509009,
+              22540.203490990974
+            ]
+          },
+          "interval_score80": {
+            "left_minus_right": -295658.56599099096,
+            "game_bootstrap95": [
+              -452884.2108108108,
+              -137289.75929054056
+            ]
+          },
+          "pinball_0.5": {
+            "left_minus_right": -2049.9641891891883,
+            "game_bootstrap95": [
+              -16225.055743243243,
+              13774.131768018015
+            ]
+          }
+        },
+        "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+      }
+    },
+    "truth_games": 74,
+    "truth_decisions": 277,
+    "model_sha256_by_arm": {}
+  },
+  "seed_scores": [
+    {
+      "scope": "historical_candidate_posterior_replay_without_independent_timestamps",
+      "arms": {
+        "v2": {
+          "all": {
+            "decisions": 277,
+            "games": 74,
+            "valid_decisions": 277,
+            "failed_decisions": 0,
+            "status_counts": {
+              "low_ess": 30,
+              "ok": 247
+            },
+            "decision_weighted": {
+              "absolute_error": 639687.440433213,
+              "absolute_percentage_error": 0.1562570533479033,
+              "covered80": 0.8736462093862816,
+              "interval_width": 2805686.379061372,
+              "below_p10": 0.10108303249097472,
+              "above_p90": 0.02527075812274368,
+              "interval_score80": 3133440.4945848375,
+              "pinball_0.1": 118676.91083032491,
+              "pinball_0.5": 326714.8700361011,
+              "pinball_0.9": 194667.1386281588
+            },
+            "game_weighted": {
+              "absolute_error": 628686.5871621621,
+              "absolute_percentage_error": 0.15799984761770772,
+              "covered80": 0.8734234234234233,
+              "interval_width": 2693118.365765766,
+              "below_p10": 0.10518018018018017,
+              "above_p90": 0.021396396396396396,
+              "interval_score80": 3018371.825225225,
+              "pinball_0.1": 117573.9939864865,
+              "pinball_0.5": 311636.04594594595,
+              "pinball_0.9": 184263.18853603597
+            }
+          },
+          "over700": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "700to1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "over1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          }
+        },
+        "R2": {
+          "all": {
+            "decisions": 277,
+            "games": 74,
+            "valid_decisions": 277,
+            "failed_decisions": 0,
+            "status_counts": {
+              "low_ess": 26,
+              "ok": 251
+            },
+            "decision_weighted": {
+              "absolute_error": 626107.9494584837,
+              "absolute_percentage_error": 0.1557474778398565,
+              "covered80": 0.8375451263537906,
+              "interval_width": 2365665.133574007,
+              "below_p10": 0.1263537906137184,
+              "above_p90": 0.036101083032490974,
+              "interval_score80": 2779481.2707581227,
+              "pinball_0.1": 117068.28050541518,
+              "pinball_0.5": 320436.18231046933,
+              "pinball_0.9": 160879.84657039706
+            },
+            "game_weighted": {
+              "absolute_error": 615498.0912162162,
+              "absolute_percentage_error": 0.15759807182813335,
+              "covered80": 0.8398648648648649,
+              "interval_width": 2286689.7808558554,
+              "below_p10": 0.1295045045045045,
+              "above_p90": 0.03063063063063063,
+              "interval_score80": 2699911.452027027,
+              "pinball_0.1": 117560.774009009,
+              "pinball_0.5": 307536.1423423423,
+              "pinball_0.9": 152430.37119369366
+            }
+          },
+          "over700": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "700to1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "over1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          }
+        },
+        "KG_mix2": {
+          "all": {
+            "decisions": 277,
+            "games": 74,
+            "valid_decisions": 277,
+            "failed_decisions": 0,
+            "status_counts": {
+              "low_ess": 24,
+              "ok": 253
+            },
+            "decision_weighted": {
+              "absolute_error": 619366.6642599278,
+              "absolute_percentage_error": 0.1548273675792727,
+              "covered80": 0.8411552346570397,
+              "interval_width": 2367014.4007220217,
+              "below_p10": 0.1263537906137184,
+              "above_p90": 0.032490974729241874,
+              "interval_score80": 2764592.23465704,
+              "pinball_0.1": 115907.4761732852,
+              "pinball_0.5": 312607.4891696751,
+              "pinball_0.9": 160551.74729241873
+            },
+            "game_weighted": {
+              "absolute_error": 605476.6637387387,
+              "absolute_percentage_error": 0.15559918766284808,
+              "covered80": 0.8407657657657658,
+              "interval_width": 2285210.4527027025,
+              "below_p10": 0.1313063063063063,
+              "above_p90": 0.027927927927927924,
+              "interval_score80": 2686789.1306306305,
+              "pinball_0.1": 116635.72704954953,
+              "pinball_0.5": 298207.2742117117,
+              "pinball_0.9": 152043.1860135135
+            }
+          },
+          "over700": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "700to1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "over1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          }
+        }
+      },
+      "comparisons": {
+        "KG_mix2 minus R2": {
+          "paired_games": 74,
+          "paired_decisions": 277,
+          "metrics": {
+            "absolute_percentage_error": {
+              "left_minus_right": -0.001998884165285251,
+              "game_bootstrap95": [
+                -0.006216994143498576,
+                0.002355150436112957
+              ]
+            },
+            "absolute_error": {
+              "left_minus_right": -10021.427477477477,
+              "game_bootstrap95": [
+                -25577.205484234237,
+                5107.246216216212
+              ]
+            },
+            "interval_score80": {
+              "left_minus_right": -13122.321396396394,
+              "game_bootstrap95": [
+                -60224.21351351351,
+                28444.746272522516
+              ]
+            },
+            "pinball_0.5": {
+              "left_minus_right": -9328.86813063063,
+              "game_bootstrap95": [
+                -19686.050990990992,
+                671.7431362612607
+              ]
+            }
+          },
+          "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+        },
+        "KG_mix2 minus v2": {
+          "paired_games": 74,
+          "paired_decisions": 277,
+          "metrics": {
+            "absolute_percentage_error": {
+              "left_minus_right": -0.002400659954859619,
+              "game_bootstrap95": [
+                -0.009794633305696064,
+                0.005192943809844404
+              ]
+            },
+            "absolute_error": {
+              "left_minus_right": -23209.923423423425,
+              "game_bootstrap95": [
+                -49968.66649774775,
+                5511.344132882872
+              ]
+            },
+            "interval_score80": {
+              "left_minus_right": -331582.6945945946,
+              "game_bootstrap95": [
+                -482234.2420045045,
+                -175121.77668918914
+              ]
+            },
+            "pinball_0.5": {
+              "left_minus_right": -13428.771734234233,
+              "game_bootstrap95": [
+                -27160.684386261262,
+                1102.0937331081022
+              ]
+            }
+          },
+          "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+        },
+        "R2 minus v2": {
+          "paired_games": 74,
+          "paired_decisions": 277,
+          "metrics": {
+            "absolute_percentage_error": {
+              "left_minus_right": -0.00040177578957436877,
+              "game_bootstrap95": [
+                -0.006817388516233546,
+                0.006481100408423123
+              ]
+            },
+            "absolute_error": {
+              "left_minus_right": -13188.495945945944,
+              "game_bootstrap95": [
+                -41528.02920045045,
+                17461.873243243233
+              ]
+            },
+            "interval_score80": {
+              "left_minus_right": -318460.3731981982,
+              "game_bootstrap95": [
+                -470677.76058558555,
+                -164817.2811148649
+              ]
+            },
+            "pinball_0.5": {
+              "left_minus_right": -4099.903603603605,
+              "game_bootstrap95": [
+                -19856.348091216216,
+                12194.253614864863
+              ]
+            }
+          },
+          "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+        }
+      },
+      "truth_games": 74,
+      "truth_decisions": 277,
+      "model_sha256_by_arm": {}
+    },
+    {
+      "scope": "historical_candidate_posterior_replay_without_independent_timestamps",
+      "arms": {
+        "v2": {
+          "all": {
+            "decisions": 277,
+            "games": 74,
+            "valid_decisions": 277,
+            "failed_decisions": 0,
+            "status_counts": {
+              "low_ess": 30,
+              "ok": 247
+            },
+            "decision_weighted": {
+              "absolute_error": 626224.4693140794,
+              "absolute_percentage_error": 0.15314884372759088,
+              "covered80": 0.8700361010830325,
+              "interval_width": 2789269.8014440434,
+              "below_p10": 0.10830324909747292,
+              "above_p90": 0.021660649819494584,
+              "interval_score80": 3090292.545126354,
+              "pinball_0.1": 118071.68772563177,
+              "pinball_0.5": 318303.69855595665,
+              "pinball_0.9": 190957.56678700357
+            },
+            "game_weighted": {
+              "absolute_error": 617241.7527027028,
+              "absolute_percentage_error": 0.15476259423534605,
+              "covered80": 0.8713963963963964,
+              "interval_width": 2674790.2094594594,
+              "below_p10": 0.1105855855855856,
+              "above_p90": 0.018018018018018018,
+              "interval_score80": 2968075.5405405406,
+              "pinball_0.1": 116203.79765765766,
+              "pinball_0.5": 304965.1320945946,
+              "pinball_0.9": 180603.75639639638
+            }
+          },
+          "over700": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "700to1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "over1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          }
+        },
+        "R2": {
+          "all": {
+            "decisions": 277,
+            "games": 74,
+            "valid_decisions": 277,
+            "failed_decisions": 0,
+            "status_counts": {
+              "low_ess": 26,
+              "ok": 251
+            },
+            "decision_weighted": {
+              "absolute_error": 623128.8267148015,
+              "absolute_percentage_error": 0.1549791942786611,
+              "covered80": 0.8303249097472925,
+              "interval_width": 2371043.357400722,
+              "below_p10": 0.12274368231046931,
+              "above_p90": 0.04693140794223827,
+              "interval_score80": 2779741.010830325,
+              "pinball_0.1": 116014.47978339353,
+              "pinball_0.5": 317457.0379061372,
+              "pinball_0.9": 161959.62129963897
+            },
+            "game_weighted": {
+              "absolute_error": 615219.4261261261,
+              "absolute_percentage_error": 0.15742031415542296,
+              "covered80": 0.8301801801801802,
+              "interval_width": 2293786.609459459,
+              "below_p10": 0.1286036036036036,
+              "above_p90": 0.04121621621621621,
+              "interval_score80": 2697574.4405405405,
+              "pinball_0.1": 116397.78578828831,
+              "pinball_0.5": 305306.07229729724,
+              "pinball_0.9": 153359.65826576573
+            }
+          },
+          "over700": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "700to1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "over1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          }
+        },
+        "KG_mix2": {
+          "all": {
+            "decisions": 277,
+            "games": 74,
+            "valid_decisions": 277,
+            "failed_decisions": 0,
+            "status_counts": {
+              "low_ess": 24,
+              "ok": 253
+            },
+            "decision_weighted": {
+              "absolute_error": 624604.1985559567,
+              "absolute_percentage_error": 0.15601784568608373,
+              "covered80": 0.8375451263537906,
+              "interval_width": 2369840.9711191338,
+              "below_p10": 0.1299638989169675,
+              "above_p90": 0.032490974729241874,
+              "interval_score80": 2771852.8483754513,
+              "pinball_0.1": 116712.30541516247,
+              "pinball_0.5": 315354.3249097473,
+              "pinball_0.9": 160472.97942238266
+            },
+            "game_weighted": {
+              "absolute_error": 610828.0024774775,
+              "absolute_percentage_error": 0.15709179903493484,
+              "covered80": 0.8398648648648649,
+              "interval_width": 2295216.0925675677,
+              "below_p10": 0.134009009009009,
+              "above_p90": 0.026126126126126123,
+              "interval_score80": 2686251.7727477476,
+              "pinball_0.1": 116329.70322072072,
+              "pinball_0.5": 301050.2083333334,
+              "pinball_0.9": 152295.47405405404
+            }
+          },
+          "over700": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "700to1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          },
+          "over1000": {
+            "decisions": 0,
+            "games": 0,
+            "valid_decisions": 0,
+            "failed_decisions": 0,
+            "status_counts": {},
+            "decision_weighted": null,
+            "game_weighted": null
+          }
+        }
+      },
+      "comparisons": {
+        "KG_mix2 minus R2": {
+          "paired_games": 74,
+          "paired_decisions": 277,
+          "metrics": {
+            "absolute_percentage_error": {
+              "left_minus_right": -0.00032851512048811166,
+              "game_bootstrap95": [
+                -0.005260548151847104,
+                0.004721232738083671
+              ]
+            },
+            "absolute_error": {
+              "left_minus_right": -4391.423648648649,
+              "game_bootstrap95": [
+                -22770.472927927927,
+                12997.236587837831
+              ]
+            },
+            "interval_score80": {
+              "left_minus_right": -11322.66779279279,
+              "game_bootstrap95": [
+                -63942.198941441435,
+                42924.160563063066
+              ]
+            },
+            "pinball_0.5": {
+              "left_minus_right": -4255.863963963965,
+              "game_bootstrap95": [
+                -13302.429701576575,
+                4555.998282657657
+              ]
+            }
+          },
+          "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+        },
+        "KG_mix2 minus v2": {
+          "paired_games": 74,
+          "paired_decisions": 277,
+          "metrics": {
+            "absolute_percentage_error": {
+              "left_minus_right": 0.0023292047995887733,
+              "game_bootstrap95": [
+                -0.005866435338323423,
+                0.011479458299736478
+              ]
+            },
+            "absolute_error": {
+              "left_minus_right": -6413.750225225226,
+              "game_bootstrap95": [
+                -35284.234493243246,
+                25221.110596846844
+              ]
+            },
+            "interval_score80": {
+              "left_minus_right": -281823.7677927928,
+              "game_bootstrap95": [
+                -439814.45739864866,
+                -116108.53208333337
+              ]
+            },
+            "pinball_0.5": {
+              "left_minus_right": -3914.9237612612606,
+              "game_bootstrap95": [
+                -18934.208406531532,
+                13122.26474099099
+              ]
+            }
+          },
+          "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+        },
+        "R2 minus v2": {
+          "paired_games": 74,
+          "paired_decisions": 277,
+          "metrics": {
+            "absolute_percentage_error": {
+              "left_minus_right": 0.002657719920076885,
+              "game_bootstrap95": [
+                -0.004497639141126906,
+                0.010813028544736052
+              ]
+            },
+            "absolute_error": {
+              "left_minus_right": -2022.3265765765752,
+              "game_bootstrap95": [
+                -30706.096002252256,
+                29936.655912162165
+              ]
+            },
+            "interval_score80": {
+              "left_minus_right": -270501.10000000003,
+              "game_bootstrap95": [
+                -432783.599954955,
+                -103845.53960585587
+              ]
+            },
+            "pinball_0.5": {
+              "left_minus_right": 340.94020270270386,
+              "game_bootstrap95": [
+                -14136.403761261261,
+                16563.161103603605
+              ]
+            }
+          },
+          "warning": "Intervals condition on frozen forecasts and ignore between-day dependence; paired-success scores must be read with each arm failure rate."
+        }
+      },
+      "truth_games": 74,
+      "truth_decisions": 277,
+      "model_sha256_by_arm": {}
+    }
+  ],
+  "numerical": {
+    "v2": {
+      "stable": 230,
+      "stage_counts": {
+        "-1": 0,
+        "0": 116,
+        "1": 71,
+        "2": 90
+      },
+      "seconds": 2341.6166842999864
+    },
+    "R2": {
+      "stable": 240,
+      "stage_counts": {
+        "-1": 0,
+        "0": 133,
+        "1": 74,
+        "2": 70
+      },
+      "seconds": 15322.643173199998
+    },
+    "KG_mix2": {
+      "stable": 242,
+      "stage_counts": {
+        "-1": 0,
+        "0": 115,
+        "1": 87,
+        "2": 75
+      },
+      "seconds": 13324.260324499965
+    }
+  },
+  "truth_summary": {
+    "games": 74,
+    "decisions": 277,
+    "maximum_total": 6824814,
+    "dates": [
+      "20260804"
+    ]
+  },
+  "disagreement": {
+    "quantiles": [
+      0.011258469514764113,
+      0.03895448139772908,
+      0.051493606589628316,
+      0.12930523812669265
+    ],
+    "above10_percent": 2,
+    "decisions": 277
+  },
+  "limits": [
+    "One repeatedly examined historical evaluation date, no fresh blind test.",
+    "74 games have no settlement above seven million; no tail pre-bid qualification.",
+    "Historical timestamps do not independently certify all visibility boundaries.",
+    "Shared sampler pools reveals, ignores positions, and uses a training-only empirical rows likelihood.",
+    "Published v2 provenance says 1556 pre-Aug04 games; full source training-session list was not available in the public artifact.",
+    "The 74 consumed games with available prefixes are a selected historical subset, not a random sample of all games.",
+    "Low-ESS or unresolved seed differences remain in primary scores; failed cases are counted explicitly."
+  ]
+}

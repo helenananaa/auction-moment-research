@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "stage": "2026-10-27 historical research closeout",
+  "outputs": [
+    {
+      "path": "../../models/research-world-model-stage-20261027/KG_mix2.json",
+      "bytes": 437731,
+      "sha256": "fbbd5620dcafd65d651f5306c41a387c0a9cc58c814a7296bf067a458b1aa132"
+    },
+    {
+      "path": "../../models/research-world-model-stage-20261027/MODEL_CARD.md",
+      "bytes": 1711,
+      "sha256": "28c71a526c3fc8f1f9d4ba59bf868249c288a3d46d25bc9048cc0c2e49497fbc"
+    },
+    {
+      "path": "../../models/research-world-model-stage-20261027/R2.json",
+      "bytes": 437510,
+      "sha256": "e4b4e85c383c0ce0c35fa5f49985f44ca154b12569f360907e7f224f1e390093"
+    },
+    {
+      "path": "../../reports/inference-development-stage-20261027.md",
+      "bytes": 5685,
+      "sha256": "9a23d774b7b6072d43f9165b375456b06bf19bc2d1e4c610dd2e8655fd2206c5"
+    },
+    {
+      "path": "../../reports/world-model-stage-20261027.md",
+      "bytes": 13390,
+      "sha256": "ec8b20d0c49681f98fa140e23e898cfc0d1fa8b9d42c4e0ad8623665c176f856"
+    },
+    {
+      "path": "export-parity.json",
+      "bytes": 784,
+      "sha256": "029e29d44999d17f20b9da50aa7ce0380bd7142758e3985ac44a9f91bd88616b"
+    },
+    {
+      "path": "historical-replay.json",
+      "bytes": 32673,
+      "sha256": "e027fa733d61b3f2710514ccd9622c02185ba56b3b781f057accd83e8310b7d1"
+    },
+    {
+      "path": "inference-development.json",
+      "bytes": 188990,
+      "sha256": "1640db881db33e5a89c59f21633163660cbd7537a941aef005257e8086c0985c"
+    },
+    {
+      "path": "integration-validation.json",
+      "bytes": 1219,
+      "sha256": "fbfd97ac6c37d1a874996ee21d8803049ebc132bebbfc462f6c14a5dad3893b1"
+    },
+    {
+      "path": "mechanism-comparison.json",
+      "bytes": 75544,
+      "sha256": "be62cd49a4c806d8a4c61f3d081f052fa28c460a49081dec485a040936b73696"
+    },
+    {
+      "path": "mechanism-recovery.json",
+      "bytes": 48529,
+      "sha256": "8dcb5e54a8798f49f01cf874fcfade18337f4908bd01c20da19346785048df40"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1865,
+      "sha256": "4467cd712a1055b0b9b22a7a63a240b8d92abfd889021b94b0572e565aa836f8"
+    },
+    {
+      "path": "source-provenance.json",
+      "bytes": 75762,
+      "sha256": "2bc7e0908e278e01b497126a54ef7aa60a9d7436347e86a97b6cdbb84c49b701"
+    },
+    {
+      "path": "../../src/auction_moment_research/research_world_model.py",
+      "bytes": 8591,
+      "sha256": "d4cfe17c40d8582e052d1bb3de7d7fe2c9237e2c11f9774cc56ee68d9fabbbf4"
+    }
+  ]
+}
